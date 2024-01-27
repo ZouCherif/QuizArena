@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
 
 const verifyJWT = async (req, res, next) => {
   if (!req.cookies?.access_token)
