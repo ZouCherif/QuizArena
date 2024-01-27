@@ -16,6 +16,9 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
+app.use("/register", require("./routes/auth/register"));
+app.use("/login", require("./routes/auth/login"));
+
 app.all("*", (req, res) => {
   res.status(404);
   res.json({ message: "404 Not Found" });
