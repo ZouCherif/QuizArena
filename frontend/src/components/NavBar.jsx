@@ -2,8 +2,10 @@ import { FaSearch } from "react-icons/fa";
 import { useState } from "react";
 import RegisterPopup from "./RegisterPopup";
 import SigninPopup from "./SigninPopup";
+import { useAuth } from "../context/AuthContext";
 
 function NavBar() {
+  const { accessToken } = useAuth();
   const [ShowSignIn, setShowSignIn] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
 
@@ -21,20 +23,24 @@ function NavBar() {
             <FaSearch size={20} className="*:text-gray-400" />
           </div>
         </div>
-        <div>
-          <button
-            className="rounded-lg bg-gray-700 mr-4 px-4 py-1 hover:bg-gray-500 duration-300"
-            onClick={() => setShowRegister(true)}
-          >
-            S'inscrire
-          </button>
-          <button
-            className="rounded-lg bg-[#6541F5] px-4 py-1 hover:bg-[#886df3] duration-300"
-            onClick={() => setShowSignIn(true)}
-          >
-            Se connecter
-          </button>
-        </div>
+        {!accessToken ? (
+          <div>
+            <button
+              className="rounded-lg bg-gray-700 mr-4 px-4 py-1 hover:bg-gray-500 duration-300"
+              onClick={() => setShowRegister(true)}
+            >
+              S'inscrire
+            </button>
+            <button
+              className="rounded-lg bg-[#6541F5] px-4 py-1 hover:bg-[#886df3] duration-300"
+              onClick={() => setShowSignIn(true)}
+            >
+              Se connecter
+            </button>
+          </div>
+        ) : (
+          <p>connected</p>
+        )}
       </div>
       {/* Sign-in Modal */}
       {ShowSignIn && <SigninPopup onClose={() => setShowSignIn(false)} />}

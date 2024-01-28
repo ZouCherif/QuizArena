@@ -2,8 +2,12 @@ import { IoMdClose } from "react-icons/io";
 import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import GoogleOauth from "./GoogleOauth";
+import { createUser } from "../utils/api";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function SigninPopup({ onClose }) {
+  const { setToken } = useAuth();
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -14,6 +18,7 @@ function SigninPopup({ onClose }) {
   const [isPasswordValid, setPasswordValidity] = useState(true);
   const [pwdmatch, setPwdMatch] = useState(true);
   const [password2, setPassword2] = useState("");
+  const navigate = useNavigate();
   const handleInput = (e) => {
     setData({
       ...data,
@@ -45,6 +50,10 @@ function SigninPopup({ onClose }) {
     }
     setPwdMatch(true);
     try {
+      const response = await createUser(data);
+      console.log(response);
+      setToken(response.accessToken);
+      navigate("/");
     } catch (err) {
       console.log(err);
     }
@@ -148,7 +157,7 @@ function SigninPopup({ onClose }) {
             className="rounded-lg bg-[#6541F5] px-6 py-2 hover:bg-[#886df3] duration-300 block text-xl mx-auto"
             type="submit"
           >
-            Se connecter
+            S'inscrire
           </button>
         </form>
         <div className="flex items-center my-1">
