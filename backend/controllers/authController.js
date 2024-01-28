@@ -321,6 +321,30 @@ const handleRefreshToken = async (req, res) => {
   });
 };
 
+const handleLogout = async (req, res) => {
+  const refreshToken = req.cookies.refresh_token;
+  if (!refreshToken) return res.sendStatus(204);
+  res.clearCookie("refresh_token", {
+    httpOnly: true,
+    sameSite: "None",
+    secure: true,
+  });
+  res.clearCookie("access_token", {
+    httpOnly: true,
+    sameSite: "None",
+    secure: true,
+  });
+
+  const foundUser = await User.findOne({ refreshToken }).exec();
+
+  if (!foundUser) {
+    return res.sendStatus(204);
+  }
+  foundUser.refreshToken = "";
+  await foundUser.save();
+  res.sendStatus(204);
+};
+
 module.exports = {
   register,
   login,
@@ -330,4 +354,5 @@ module.exports = {
   getVerificationCode,
   verifyCode,
   handleRefreshToken,
+  handleLogout,
 };
