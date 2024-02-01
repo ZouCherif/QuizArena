@@ -83,8 +83,8 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { email, pwd } = req.body;
-  if (!email || !pwd)
+  const { email, password } = req.body;
+  if (!email || !password)
     return res
       .status(400)
       .json({ message: "Email and password are required." });
@@ -92,7 +92,7 @@ const login = async (req, res) => {
   const foundUser = await User.findOne({ email }).exec();
   if (!foundUser) return res.status(401).json({ message: "User not found" });
   // evaluate password
-  const match = await bcrypt.compare(pwd, foundUser.password);
+  const match = await bcrypt.compare(password, foundUser.password);
   if (match) {
     const { accessToken, refreshToken } = generateTokens(
       foundUser._id,

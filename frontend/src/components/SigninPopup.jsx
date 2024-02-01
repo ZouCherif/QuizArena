@@ -1,13 +1,16 @@
 import { IoMdClose } from "react-icons/io";
 import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import {login} from "../utils/api";
 import GoogleOauth from "./GoogleOauth";
+import {useNavigate} from "react-router-dom";
 
 function SigninPopup({ onClose }) {
   const [data, setData] = useState({
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [isEmailValid, setEmailValidity] = useState(true);
   const [isPasswordValid, setPasswordValidity] = useState(true);
@@ -37,6 +40,9 @@ function SigninPopup({ onClose }) {
     }
     setPasswordValidity(true);
     try {
+      const response = await login(data);
+      console.log(response.data);
+      navigate("/");
     } catch (err) {
       console.log(err);
     }

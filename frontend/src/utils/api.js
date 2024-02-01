@@ -28,5 +28,17 @@ export const createUser = async (data) => {
       withCredentials: true,
     });
     return response.data;
-  } catch (err) {}
+  } catch (err) {
+    console.log(err);
+  }
+};
+export const login = async (data) => {
+  try {
+    const response = await api.post("/login", data, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
 };
