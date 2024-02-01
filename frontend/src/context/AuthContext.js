@@ -7,14 +7,14 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [accessToken, setAccessToken] = useState(null);
+  const [infoToken, setAccessToken] = useState(null);
 
   const setToken = (token) => {
     setAccessToken(token);
   };
 
   return (
-    <AuthContext.Provider value={{ accessToken, setToken }}>
+    <AuthContext.Provider value={{ infoToken, setToken }}>
       {children}
     </AuthContext.Provider>
   );

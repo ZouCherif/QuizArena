@@ -51,8 +51,7 @@ function SigninPopup({ onClose }) {
     setPwdMatch(true);
     try {
       const response = await createUser(data);
-      console.log(response);
-      setToken(response.accessToken);
+      setToken(response.infoToken);
       navigate("/");
     } catch (err) {
       console.log(err);

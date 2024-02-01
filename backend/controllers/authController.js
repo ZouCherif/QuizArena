@@ -60,9 +60,22 @@ const register = async (req, res) => {
       sameSite: "None",
       maxAge: 24 * 60 * 60 * 1000,
     });
+
+    const infoToken = jwt.sign(
+      {
+        UserInfo: {
+          username,
+        },
+      },
+      process.env.INFO_TOKEN_SECRET,
+      { expiresIn: "59m" }
+    );
+    res.cookie("infoToken", infoToken, {
+      maxAge: 59 * 60 * 1000,
+    });
     res.status(201).json({
       message: `New user ${newUser.name} created!`,
-      accessToken,
+      infoToken,
     });
   } catch (e) {
     res.status(500).json({ message: e.message });
@@ -91,20 +104,34 @@ const login = async (req, res) => {
 
     res.cookie("access_token", accessToken, {
       httpOnly: true,
-      secure: true,
+      // secure: true,
       sameSite: "None",
       maxAge: 59 * 60 * 1000,
       //domain: "localhost",
     });
     res.cookie("refresh_token", refreshToken, {
       httpOnly: true,
-      secure: true,
+      // secure: true,
       sameSite: "None",
       maxAge: 24 * 60 * 60 * 1000,
     });
+
+    const infoToken = jwt.sign(
+      {
+        UserInfo: {
+          username: foundUser.username,
+        },
+      },
+      process.env.INFO_TOKEN_SECRET,
+      { expiresIn: "59m" }
+    );
+
+    res.cookie("infoToken", infoToken, {
+      maxAge: 59 * 60 * 1000,
+    });
     res.json({
       message: "successfully loged in",
-      accessToken,
+      infoToken,
     });
   } else {
     res.status(401).json({ message: "Invalid password" });
@@ -214,7 +241,7 @@ const resetPassword = async (req, res) => {
 
     const user = await User.findOne({
       resetPasswordToken: token,
-      resetPasswordExpires: { $gt: Date.now() }, // Check if the token is not expired
+      resetPasswordExpires: { $gt: Date.now() },
     });
 
     if (!user) {
