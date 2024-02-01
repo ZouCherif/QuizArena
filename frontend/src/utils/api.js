@@ -42,3 +42,14 @@ export const login = async (data) => {
     console.log(err);
   }
 };
+
+export const logout = async (data) => {
+  try {
+    const response = await api.get("/logout", {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+};

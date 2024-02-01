@@ -104,14 +104,14 @@ const login = async (req, res) => {
 
     res.cookie("access_token", accessToken, {
       httpOnly: true,
-      // secure: true,
+      secure: true,
       sameSite: "None",
       maxAge: 59 * 60 * 1000,
       //domain: "localhost",
     });
     res.cookie("refresh_token", refreshToken, {
       httpOnly: true,
-      // secure: true,
+      secure: true,
       sameSite: "None",
       maxAge: 24 * 60 * 60 * 1000,
     });

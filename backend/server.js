@@ -18,6 +18,7 @@ app.use(cookieParser());
 
 app.use("/register", require("./routes/auth/register"));
 app.use("/login", require("./routes/auth/login"));
+app.use("/logout", require("./routes/auth/logout"));
 
 app.all("*", (req, res) => {
   res.status(404);
