@@ -23,14 +23,10 @@ const api = axios.create({
 // };
 
 export const createUser = async (data) => {
-  try {
-    const response = await api.post("/register", data, {
-      withCredentials: true,
-    });
-    return response.data;
-  } catch (err) {
-    console.log(err);
-  }
+  const response = await api.post("/register", data, {
+    withCredentials: true,
+  });
+  return response.data;
 };
 export const login = async (data) => {
   try {

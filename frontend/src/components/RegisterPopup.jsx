@@ -18,6 +18,7 @@ function SigninPopup({ onClose }) {
   const [isPasswordValid, setPasswordValidity] = useState(true);
   const [pwdmatch, setPwdMatch] = useState(true);
   const [password2, setPassword2] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const handleInput = (e) => {
     setData({
@@ -33,6 +34,7 @@ function SigninPopup({ onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
     if (!data.email || !data.password) return;
     if (!validateEmail(data.email)) {
       setEmailValidity(false);
@@ -54,7 +56,7 @@ function SigninPopup({ onClose }) {
       setToken(response.infoToken);
       navigate("/");
     } catch (err) {
-      console.log(err);
+      setError(err.response.data.message);
     }
   };
 
@@ -152,6 +154,11 @@ function SigninPopup({ onClose }) {
           <p className="text-sm text-[#6541F5] hover:underline cursor-pointer w-fit mb-4">
             Mot de passe oublié?
           </p>
+          {error && (
+            <p className="text-red-500 text-xs text-center animate-shake">
+              {error}
+            </p>
+          )}
           <button
             className="rounded-lg bg-[#6541F5] px-6 py-2 hover:bg-[#886df3] duration-300 block text-xl mx-auto"
             type="submit"

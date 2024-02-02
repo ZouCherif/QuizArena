@@ -27,6 +27,9 @@ const register = async (req, res) => {
   const { username, email, password } = req.body;
   if (!username || !email || !password)
     return res.status(400).json({ message: "all infomations are required" });
+  const duplicateName = await User.findOne({ username });
+  if (duplicateName)
+    return res.status(400).json({ message: "Username already in use" });
   const duplicate = await User.findOne({ email: email });
   if (duplicate)
     return res.status(400).json({ message: "email already in use" });
