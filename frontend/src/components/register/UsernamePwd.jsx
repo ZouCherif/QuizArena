@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { createUser } from "../../utils/api";
 import { useAuth } from "../../context/AuthContext";
 
 function UsernamePwd({ email, onClose }) {
-  const { setToken } = useAuth();
+  const { registerUser } = useAuth();
   const [data, setData] = useState({
     password: "",
     username: "",
@@ -44,12 +43,11 @@ function UsernamePwd({ email, onClose }) {
     }
     setPwdMatch(true);
     try {
-      const response = await createUser({ ...data, email });
-      console.log(response);
-      setToken(response.infoToken);
+      await registerUser({ ...data, email });
       onClose();
     } catch (err) {
       setSubmitDiabled(false);
+      console.log(err);
       setError(err.response.data.message);
     }
   };

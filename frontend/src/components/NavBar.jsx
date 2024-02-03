@@ -5,7 +5,7 @@ import SigninPopup from "./SigninPopup";
 import { useAuth } from "../context/AuthContext";
 
 function NavBar() {
-  const { infoToken } = useAuth();
+  const { user } = useAuth();
   const [ShowSignIn, setShowSignIn] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
 
@@ -27,7 +27,7 @@ function NavBar() {
             <FaSearch size={20} className="*:text-gray-400" />
           </div>
         </div>
-        {!infoToken ? (
+        {!user ? (
           <div>
             <button
               className="rounded-lg bg-gray-700 mr-4 px-4 py-1 hover:bg-gray-500 duration-300"
@@ -43,7 +43,7 @@ function NavBar() {
             </button>
           </div>
         ) : (
-          <p>connected</p>
+          <p>{user.username}</p>
         )}
       </div>
       {/* Sign-in Modal */}

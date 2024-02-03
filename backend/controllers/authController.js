@@ -306,10 +306,10 @@ const verifyCode = async (req, res) => {
     if (!verificationRecord)
       return res.status(400).json({ message: "Invalid code" });
 
-    const currentTime = new Date();
+    const creationTime = verificationRecord.createdAt.getTime();
     const expirationTime = verificationRecord.createdAt.getTime() + 3600 * 1000;
 
-    if (currentTime <= expirationTime) {
+    if (creationTime <= expirationTime) {
       await VerificationCode.deleteOne({ email, code });
       return res.status(200).json({ message: "Code verified successfully" });
     } else {

@@ -1,10 +1,6 @@
-import {
-  createContext,
-  useState,
-  useContext,
-  useCallback,
-  useEffect,
-} from "react";
+import { createContext, useState, useContext, useEffect } from "react";
+import { login, logout, createUser } from "../utils/api";
+import { jwtDecode } from "jwt-decode";
 
 const AuthContext = createContext();
 
@@ -13,12 +9,9 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [infoToken, setAccessToken] = useState(null);
+  const [user, setUser] = useState(null);
   let [loading, setLoading] = useState(true);
 
-  const setToken = useCallback((token) => {
-    setAccessToken(token);
-  }, []);
   const getCookieValue = () => {
     const cookieName = "infoToken=";
     const cookies = document.cookie.split(";");
@@ -32,18 +25,35 @@ export const AuthProvider = ({ children }) => {
     return null;
   };
 
+  const registerUser = async (data) => {
+    console.log(data);
+    const response = await createUser(data);
+    setUser(jwtDecode(response.infoToken).UserInfo);
+  };
+
+  const loginUser = async (data) => {
+    const response = await login(data);
+    setUser(jwtDecode(response.infoToken).UserInfo);
+  };
+
+  const logoutUser = async () => {
+    await logout();
+    setUser(null);
+    document.cookie = `infoToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+  };
+
   useEffect(() => {
-    if (loading && !infoToken) {
+    if (loading && !user) {
       const savedToken = getCookieValue();
       if (savedToken) {
-        setToken(savedToken);
+        setUser(jwtDecode(savedToken).UserInfo);
       }
       setLoading(false);
     }
-  }, [infoToken, setToken, loading]);
+  }, [user, loading]);
 
   return (
-    <AuthContext.Provider value={{ infoToken, setToken }}>
+    <AuthContext.Provider value={{ user, loginUser, logoutUser, registerUser }}>
       {loading ? null : children}
     </AuthContext.Provider>
   );
