@@ -290,14 +290,16 @@ const getVerificationCode = async (req, res) => {
       code: code,
     });
     await verificationRecord.save();
+    res.status(200).send({ message: "code Sent" });
   } catch (e) {
     console.log("error when sending the email", e.message);
+    res.status(500).send({ message: e.message });
   }
 };
 
 const verifyCode = async (req, res) => {
-  if (!req.body.code)
-    return res.status(400).json({ message: "Code not found" });
+  if (!req.body.code || !req.body.email)
+    return res.status(400).json({ message: "Code or email not found" });
   const { email, code } = req.body;
   try {
     const verificationRecord = await VerificationCode.findOne({ email, code });

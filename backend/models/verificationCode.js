@@ -4,6 +4,7 @@ const verificationCodeSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   code: {
     type: Number,
@@ -12,7 +13,7 @@ const verificationCodeSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: 3600,
+    // expires: 3600,
   },
 });
 

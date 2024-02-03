@@ -3,7 +3,7 @@ import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { login } from "../utils/api";
 import GoogleOauth from "./GoogleOauth";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function SigninPopup({ onClose }) {
@@ -12,10 +12,11 @@ function SigninPopup({ onClose }) {
     password: "",
   });
   const { setToken } = useAuth();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [isEmailValid, setEmailValidity] = useState(true);
   const [isPasswordValid, setPasswordValidity] = useState(true);
+  const [error, setError] = useState("");
   const handleInput = (e) => {
     setData({
       ...data,
@@ -30,6 +31,7 @@ function SigninPopup({ onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
     if (!data.email || !data.password) return;
     if (!validateEmail(data.email)) {
       setEmailValidity(false);
@@ -44,9 +46,11 @@ function SigninPopup({ onClose }) {
     try {
       const response = await login(data);
       setToken(response.infoToken);
-      navigate("/");
+      // navigate("/");
+      onClose();
     } catch (err) {
       console.log(err);
+      setError(err.response.data.message);
     }
   };
 
@@ -116,6 +120,11 @@ function SigninPopup({ onClose }) {
           <p className="text-sm text-[#6541F5] hover:underline cursor-pointer w-fit mb-10">
             Mot de passe oublié?
           </p>
+          {error && (
+            <p className="text-red-500 text-xs text-center animate-shake">
+              {error}
+            </p>
+          )}
           <button
             className="rounded-lg bg-[#6541F5] px-6 py-2 hover:bg-[#886df3] duration-300 block text-xl mx-auto"
             type="submit"

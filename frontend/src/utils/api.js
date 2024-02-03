@@ -8,19 +8,15 @@ const api = axios.create({
   },
 });
 
-// export const sendCode = async (email) => {
-//   try {
-//     const response = await api.post("/register/getVerificationCode", { email });
-//     return response.data;
-//   } catch (err) {}
-// };
+export const sendCode = async (email) => {
+  const response = await api.post("/register/getVerificationCode", { email });
+  return response.data;
+};
 
-// export const verifyCode = async (data) => {
-//   try {
-//     const response = await api.post("/register/verifyCode", data);
-//     return response.data;
-//   } catch (err) {}
-// };
+export const verifyCode = async (data) => {
+  const response = await api.post("/register/verifyCode", data);
+  return response.data;
+};
 
 export const createUser = async (data) => {
   const response = await api.post("/register", data, {
@@ -29,14 +25,10 @@ export const createUser = async (data) => {
   return response.data;
 };
 export const login = async (data) => {
-  try {
-    const response = await api.post("/login", data, {
-      withCredentials: true,
-    });
-    return response.data;
-  } catch (err) {
-    console.log(err);
-  }
+  const response = await api.post("/login", data, {
+    withCredentials: true,
+  });
+  return response.data;
 };
 
 export const logout = async (data) => {
