@@ -13,7 +13,11 @@ function NavBar() {
     <div className="bg-[#1A1A2F] px-2 py-3">
       <div className="flex max-w-[1500px] m-auto px-8 items-center justify-between">
         <div className="flex items-center">
-          <div className="text-xl font-semibold mr-8">LOGO</div>
+          <div className="text-xl font-semibold mr-8 select-none">
+            <span className="text-2xl text-[#6541F5] font-bold">Q</span>uiz
+            <span className="text-2xl font-bold text-orange-500">A</span>
+            rena
+          </div>
           <div className="flex flex-initial w-96 rounded-full items-center bg-[#DADADA] py-1 px-4 ">
             <input
               type="text"

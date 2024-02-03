@@ -14,6 +14,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [infoToken, setAccessToken] = useState(null);
+  let [loading, setLoading] = useState(true);
 
   const setToken = useCallback((token) => {
     setAccessToken(token);
@@ -32,17 +33,18 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (!infoToken) {
+    if (loading && !infoToken) {
       const savedToken = getCookieValue();
       if (savedToken) {
         setToken(savedToken);
       }
+      setLoading(false);
     }
-  }, [infoToken, setToken]);
+  }, [infoToken, setToken, loading]);
 
   return (
     <AuthContext.Provider value={{ infoToken, setToken }}>
-      {children}
+      {loading ? null : children}
     </AuthContext.Provider>
   );
 };
