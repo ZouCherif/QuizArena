@@ -3,6 +3,7 @@ import { useState } from "react";
 import RegisterPopup from "./RegisterPopup";
 import SigninPopup from "./SigninPopup";
 import { useAuth } from "../context/AuthContext";
+import { IoMdAdd } from "react-icons/io";
 
 function NavBar() {
   const { user } = useAuth();
@@ -11,14 +12,18 @@ function NavBar() {
 
   return (
     <div className="bg-[#1A1A2F] px-2 py-3">
-      <div className="flex max-w-[1500px] m-auto px-8 items-center justify-between">
+      <div
+        className={`flex max-w-[1500px] m-auto px-8 items-center justify-between ${
+          showRegister || ShowSignIn ? "select-none" : ""
+        }`}
+      >
         <div className="flex items-center">
           <div className="text-xl font-semibold mr-8 select-none">
             <span className="text-2xl text-[#6541F5] font-bold">Q</span>uiz
             <span className="text-2xl font-bold text-orange-500">A</span>
             rena
           </div>
-          <div className="flex flex-initial w-96 rounded-full items-center bg-[#DADADA] py-1 px-4 ">
+          <div className="flex flex-initial w-96 rounded-full items-center bg-[#DADADA] py-1 px-4 mr-4">
             <input
               type="text"
               className="bg-transparent outline-none mr-2 flex-1 text-black"
@@ -26,6 +31,10 @@ function NavBar() {
             />
             <FaSearch size={20} className="*:text-gray-400" />
           </div>
+          <button className="flex items-center bg-orange-600 hover:bg-gray-700 duration-500 py-1 pr-4 pl-2 rounded-lg">
+            <IoMdAdd className="mr-2" size={20} />
+            Creer un quiz
+          </button>
         </div>
         {!user ? (
           <div>

@@ -1,8 +1,6 @@
 import { IoMdClose } from "react-icons/io";
 import { useState } from "react";
-import Email from "./register/Email";
-import VerificationCode from "./register/VerificationCode";
-import UsernamePwd from "./register/UsernamePwd";
+import { Email, VerificationCode, UsernamePwd } from "./register";
 
 function RegisterPopup({ onClose }) {
   const [email, setEmail] = useState("");

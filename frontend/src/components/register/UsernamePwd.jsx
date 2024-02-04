@@ -47,7 +47,6 @@ function UsernamePwd({ email, onClose }) {
       onClose();
     } catch (err) {
       setSubmitDiabled(false);
-      console.log(err);
       setError(err.response.data.message);
     }
   };
