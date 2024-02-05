@@ -31,21 +31,21 @@ function NavBar() {
             />
             <FaSearch size={20} className="*:text-gray-400" />
           </div>
-          <button className="flex items-center bg-orange-600 hover:bg-gray-700 duration-500 py-1 pr-4 pl-2 rounded-lg">
+          <button className="sm:flex items-center bg-orange-600 hover:bg-gray-700 duration-500 py-1 pr-4 pl-2 rounded-lg hidden   ">
             <IoMdAdd className="mr-2" size={20} />
             Creer un quiz
           </button>
         </div>
         {!user ? (
-          <div>
+          <div className="flex">
             <button
-              className="rounded-lg bg-gray-700 mr-4 px-4 py-1 hover:bg-gray-500 duration-300"
+              className="rounded-lg bg-gray-700 mr-4 px-4 py-1 hover:bg-gray-500 duration-300 sm:block hidden"
               onClick={() => setShowRegister(true)}
             >
               S'inscrire
             </button>
             <button
-              className="rounded-lg bg-[#6541F5] px-4 py-1 hover:bg-[#886df3] duration-300"
+              className="rounded-lg bg-[#6541F5] px-4 py-1 hover:bg-[#886df3] duration-300 sm:block hidden"
               onClick={() => setShowSignIn(true)}
             >
               Se connecter
