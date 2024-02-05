@@ -26,7 +26,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const registerUser = async (data) => {
-    console.log(data);
     const response = await createUser(data);
     setUser(jwtDecode(response.infoToken).UserInfo);
   };
