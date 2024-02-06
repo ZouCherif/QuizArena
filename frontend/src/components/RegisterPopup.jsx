@@ -17,7 +17,17 @@ function RegisterPopup({ onClose }) {
         className="mt-2 ml-2 hover:bg-gray-800 bg-opacity-5 rounded-full cursor-pointer"
       />
       <div className="w-2/3 mx-auto">
-        <h1 className="text-4xl text-center font-semibold mb-4">S'inscrire</h1>
+      <div className="text-5xl text-center font-semibold mb-3 select-none ">
+            <span className="text-5xl text-center font-semi-bold mb-10 text-[#6541F5] font-bold">
+              Q
+            </span>
+            uiz
+            <span className="text-5xl text-center font-semi-bold mb-10 font-bold text-orange-500">
+              A
+            </span>
+            rena
+          </div>
+        <h1 className="text-4xl text-center font-semibold mb-5 ">Inscription</h1>
         {view === 1 && <Email setEmail={setEmail} next={nextView} />}
         {view === 2 && (
           <VerificationCode

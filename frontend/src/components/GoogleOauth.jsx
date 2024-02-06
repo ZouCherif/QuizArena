@@ -10,10 +10,10 @@ function GoogleOauth() {
   return (
     <button
       // onClick={() => googleLogin()}
-      className="flex items-center bg-stone-200 p-2 shadow-md mx-auto border-[1px] border-black text-black"
+      className="flex items-center bg-transparent p-2 rounded-lg shadow-md mx-auto border-[1px] border-white text-white hover:bg-gray-400 hover:border-gray-400 hover:text-black"
     >
       <FcGoogle size={20} className="mr-2" />
-      login with Google account
+      Login with Google account
     </button>
   );
 }
