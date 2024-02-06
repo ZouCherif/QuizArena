@@ -1,5 +1,6 @@
 import { NavBar } from "../components";
 import { useAuth } from "../context/AuthContext";
+
 function Home() {
   const { logoutUser } = useAuth();
   const handleLogout = async () => {

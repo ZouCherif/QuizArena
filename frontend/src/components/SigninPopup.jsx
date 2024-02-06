@@ -3,6 +3,7 @@ import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import GoogleOauth from "./GoogleOauth";
 import { useAuth } from "../context/AuthContext";
+import { ImSpinner9 } from "react-icons/im";
 
 function SigninPopup({ onClose }) {
   const [data, setData] = useState({
@@ -14,6 +15,8 @@ function SigninPopup({ onClose }) {
   const [isEmailValid, setEmailValidity] = useState(true);
   const [isPasswordValid, setPasswordValidity] = useState(true);
   const [error, setError] = useState("");
+  const [loginDisabled, setLoginDisabled] = useState(false);
+
   const handleInput = (e) => {
     setData({
       ...data,
@@ -40,12 +43,18 @@ function SigninPopup({ onClose }) {
       return;
     }
     setPasswordValidity(true);
+    setLoginDisabled(true);
     try {
       await loginUser(data);
       onClose();
     } catch (err) {
+      setLoginDisabled(false);
       console.log(err);
-      setError(err.response.data.message);
+      if (err.code === "ERR_NETWORK") {
+        setError(err.message);
+      } else {
+        setError(err.response.data.message);
+      }
     }
   };
 
@@ -121,10 +130,14 @@ function SigninPopup({ onClose }) {
             </p>
           )}
           <button
-            className="rounded-lg bg-[#6541F5] px-6 py-2 hover:bg-[#886df3] duration-300 block text-xl mx-auto"
+            className="rounded-lg bg-[#6541F5] w-44 h-12 hover:bg-[#886df3] duration-300 block text-xl mx-auto"
             type="submit"
           >
-            Se connecter
+            {!loginDisabled ? (
+              <span className="whitespace-nowrap">Se connecter</span>
+            ) : (
+              <ImSpinner9 size={20} className="animate-spin mx-auto" />
+            )}
           </button>
         </form>
         <div className="flex items-center my-2">
