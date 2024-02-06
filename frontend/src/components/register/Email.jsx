@@ -37,7 +37,7 @@ function Email({ setEmail, next }) {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="email">Email:</label>
+        <label htmlFor="email">Email :</label>
         <br />
         <input
           type="text"
@@ -63,12 +63,12 @@ function Email({ setEmail, next }) {
         </button>
       </form>
       <div>
-        <div className="flex items-center mt-4">
+        <div className="flex items-center mt-10">
           <hr className="w-1/2 border border-gray-500" />
           <span className="mx-1 clear-start text-gray-500">OU</span>
           <hr className="w-1/2 border border-gray-500" />
         </div>
-        <p className="mb-1 text-center">S'inscrire avec Google</p>
+        <p className="mb-5 text-center">S'inscrire avec Google</p>
         <GoogleOauth />
       </div>
     </>
