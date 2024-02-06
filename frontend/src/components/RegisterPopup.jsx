@@ -17,7 +17,7 @@ function RegisterPopup({ onClose }) {
         className="mt-2 ml-2 hover:bg-gray-800 bg-opacity-5 rounded-full cursor-pointer"
       />
       <div className="w-2/3 mx-auto">
-      <div className="text-5xl text-center font-semibold mb-3 ">
+      <div className="text-5xl text-center font-semibold mb-3 select-none ">
             <span className="text-5xl text-center font-semi-bold mb-10 text-[#6541F5] font-bold">
               Q
             </span>

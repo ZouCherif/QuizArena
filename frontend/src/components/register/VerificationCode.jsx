@@ -6,7 +6,6 @@ function VerificationCode({ next,previous,email }) {
   const [error, setError] = useState("");
   const [submitDiabled, setSubmitDiabled] = useState(false);
 
- 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitDiabled(true);
