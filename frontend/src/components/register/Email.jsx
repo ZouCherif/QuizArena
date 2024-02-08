@@ -43,7 +43,7 @@ function Email({ setEmail, next }) {
           type="text"
           id="email"
           name="email"
-          className="w-full p-3 rounded bg-[#D9D9D9] opacity-50 text-black mb-1"
+          className="w-full p-3 rounded bg-[#D9D9D9] opacity-50 text-black mb-1 mt-1 "
           placeholder="exemple@gmail.com"
           value={mail}
           onChange={(e) => setMail(e.target.value)}
@@ -55,7 +55,7 @@ function Email({ setEmail, next }) {
           </p>
         )}
         <button
-          className="rounded-lg bg-[#6541F5] px-6 py-2 hover:bg-[#886df3] duration-300 block text-xl mx-auto mt-8"
+          className="rounded-lg bg-[#6541F5] px-6 py-2 hover:bg-[#886df3] duration-300 block xs:text-xl mx-auto xs:mt-8 mt-4 text-lg"
           type="submit"
           disabled={submitDiabled}
         >
@@ -63,12 +63,12 @@ function Email({ setEmail, next }) {
         </button>
       </form>
       <div>
-        <div className="flex items-center mt-10">
+        <div className="flex items-center xs:mt-10 mt-6">
           <hr className="w-1/2 border border-gray-500" />
           <span className="mx-1 clear-start text-gray-500">OU</span>
           <hr className="w-1/2 border border-gray-500" />
         </div>
-        <p className="mb-5 text-center">S'inscrire avec Google</p>
+        <p className="mb-5 text-center text-base xs:text-xl">S'inscrire avec Google</p>
         <GoogleOauth />
       </div>
     </>

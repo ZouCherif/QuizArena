@@ -53,23 +53,23 @@ function UsernamePwd({ email, onClose }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-2/3 fixed top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+      className="w-2/3 fixed top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-32"
     >
-      <label htmlFor="username">Username:</label>
+      <label htmlFor="username">Username :</label>
       <br />
       <input
         type="text"
         id="username"
         name="username"
-        className="w-full p-3 rounded bg-[#D9D9D9] opacity-50 text-black mb-1"
+        className="w-full p-3 rounded bg-[#D9D9D9] opacity-50 text-black mb-3"
         placeholder="Username"
         value={data.username}
         onChange={handleInput}
         required
       />
-      <label htmlFor="password">Mot de passe:</label>
+      <label htmlFor="password">Mot de passe :</label>
       <br />
-      <div className="flex w-full p-2 rounded bg-[#D9D9D9] opacity-50 text-black">
+      <div className="flex w-full p-2 rounded bg-[#D9D9D9] opacity-50 text-black mb-3">
         <input
           type={showPassword ? "text" : "password"}
           id="password"
@@ -104,12 +104,12 @@ function UsernamePwd({ email, onClose }) {
           Le mot de passe doit comporter 8 caracteres au minimum.
         </p>
       )}
-      <label htmlFor="password2">Confirmer mot de passe:</label>
+      <label htmlFor="password2">Confirmer mot de passe :</label>
       <input
         type={showPassword ? "text" : "password"}
         id="password2"
         name="password2"
-        className="w-full p-2 rounded bg-[#D9D9D9] opacity-50 text-black"
+        className="w-full p-2 rounded bg-[#D9D9D9] opacity-50 text-black mb-6"
         placeholder="•••••••••••••"
         value={password2}
         onChange={(e) => setPassword2(e.target.value)}
@@ -131,7 +131,7 @@ function UsernamePwd({ email, onClose }) {
         type="submit"
         disabled={submitDiabled}
       >
-        S'inscrire
+        Valider
       </button>
     </form>
   );

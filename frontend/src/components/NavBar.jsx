@@ -59,7 +59,7 @@ function NavBar() {
             </button>
           </div>
         ) : (
-          <p>{user.username}</p>
+          <p className="text-xl">{user.username}</p>
         )}
       </div>
       {/* Sign-in Modal */}

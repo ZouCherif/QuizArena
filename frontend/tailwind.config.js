@@ -6,6 +6,14 @@ module.exports = {
       animation: {
         shake: "shake 0.82s cubic-bezier(.36,.07,.19,.97) both",
       },
+      screens: {
+        'xs':'400px',
+        'sm': '640px',
+        'md': '768',
+        'lg': '1024px',
+        'xl': '1280px',
+        '2xl': '1536',
+      },
       keyframes: {
         shake: {
           "10%, 90%": {
