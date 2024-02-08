@@ -16,7 +16,7 @@ function App() {
             </GoogleOAuthProvider>
           }
         />
-        <Route path="/createQuiz" element={CreateQuiz} />
+        <Route path="/createQuiz" element={<CreateQuiz />} />
       </Routes>
     </Router>
   );
