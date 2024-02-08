@@ -49,7 +49,6 @@ function SigninPopup({ onClose }) {
       onClose();
     } catch (err) {
       setLoginDisabled(false);
-      console.log(err);
       if (err.code === "ERR_NETWORK") {
         setError(err.message);
       } else {
