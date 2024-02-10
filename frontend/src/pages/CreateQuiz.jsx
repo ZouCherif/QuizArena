@@ -1,7 +1,24 @@
 import { useState } from "react";
 function CreateQuiz() {
-  const [isChecked, setIsChecked] = useState(true);
-  const [categories, setCategories] = useState([]);
+  const [data, setData] = useState({
+    name: "",
+    type: "publique",
+    nbP: 0,
+    nbQ: 0,
+    auto: true,
+    categories: [],
+    lvl: "moyen",
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value, type } = e.target;
+    setData({
+      ...data,
+      [name]:
+        type === "radio" ? (name === "auto" ? value === "true" : value) : value,
+    });
+  };
+
   const cat = [
     "Mathematiques",
     "Histoire geo",
@@ -14,40 +31,33 @@ function CreateQuiz() {
     "TV & Films",
   ];
 
-  const handleRadio = (e) => {
-    if (e.target.id === "auto") {
-      setIsChecked(true);
+  const handleCategories = (e) => {
+    const categoryName = e.target.getAttribute("data-name");
+    if (!data.categories.includes(categoryName)) {
+      setData({ ...data, categories: [...data.categories, categoryName] });
     } else {
-      setIsChecked(false);
+      const updatedCategories = data.categories.filter(
+        (category) => category !== categoryName
+      );
+      setData({ ...data, categories: updatedCategories });
     }
   };
 
-  const handleCategories = (e) => {
-    const categoryName = e.target.getAttribute("data-name");
-    console.log(categoryName);
-    if (!categories.includes(categoryName)) {
-      setCategories([...categories, categoryName]);
-    } else {
-      const updatedCategories = categories.filter(
-        (category) => category !== categoryName
-      );
-      setCategories(updatedCategories);
-    }
+  const handleOnSubmit = () => {
+    console.log(data);
   };
   return (
-    <div className="bg-[#1A1A2F] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-lg z-20 sm:w-[700px] w-screen sm:h-5/6 h-screen overflow-auto px-10 py-4">
+    <div className="bg-[#1A1A2F] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-lg z-20 sm:w-[700px] w-screen sm:h-5/6 h-screen overflow-auto px-10 py-4 select-none">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-4xl mt-2 font-semibold">Creer un quiz</h1>
         <select
-          defaultValue={"publique"}
+          value={data.type}
+          name="type"
+          onChange={handleInputChange}
           className="bg-[#1A1A2F] border rounded-lg p-2"
         >
-          <option value="publique" className="text-sm">
-            publique
-          </option>
-          <option value="privée" className="text-sm">
-            privée
-          </option>
+          <option value="publique">publique</option>
+          <option value="privée">privée</option>
         </select>
       </div>
       <div className="w-4/5 mx-auto">
@@ -56,13 +66,15 @@ function CreateQuiz() {
           type="text"
           id="name"
           name="name"
+          value={data.name}
           className="w-full p-3 rounded bg-[#D9D9D9] opacity-50 text-black mb-1"
           placeholder="Le fameux quiz"
           required
+          onChange={handleInputChange}
         />
         <div className="flex mb-2">
           <div className="flex-1">
-            <label htmlFor="nbP" className="text-sm">
+            <label htmlFor="nbP" className="">
               nombre de joueur max:
             </label>
             <br />
@@ -70,50 +82,59 @@ function CreateQuiz() {
               type="number"
               id="nbP"
               name="nbP"
+              value={data.nbP}
+              min={0}
               className="w-[100px] p-3 rounded bg-[#D9D9D9] opacity-50 text-black mb-1"
               placeholder="10"
               required
+              onChange={handleInputChange}
             />
           </div>
-          <div className="flex-1">
-            <label htmlFor="nbQ" className="text-sm">
-              nombre de question:
-            </label>
+          <div
+            className={`flex-1 duration-300 ${!data.auto ? "opacity-10" : ""}`}
+          >
+            <label htmlFor="nbQ">nombre de question:</label>
             <br />
             <input
               type="number"
               id="nbQ"
               name="nbQ"
+              value={data.nbQ}
+              min={0}
               className="w-[100px] p-3 rounded bg-[#D9D9D9] opacity-50 text-black mb-1"
               placeholder="15"
               required
-              disabled={!isChecked}
+              disabled={!data.auto}
+              onChange={handleInputChange}
             />
           </div>
         </div>
-        <div className="flex mb-2">
+        <div className="flex mb-3">
           <div className="flex-1">
             <input
               id="auto"
-              name="questions"
+              name="auto"
               type="radio"
               className="align-middle mr-1"
-              defaultChecked={true}
-              onChange={handleRadio}
+              value="true"
+              checked={data.auto}
+              onChange={handleInputChange}
             />
-            <label htmlFor="auto" className="text-sm mr-2 cursor-pointer">
+            <label htmlFor="auto" className=" mr-2 cursor-pointer">
               generer mes questions
             </label>
           </div>
           <div className="flex-1">
             <input
               id="manual"
-              name="questions"
+              name="auto"
               type="radio"
               className="align-middle mr-1"
-              onChange={handleRadio}
+              value="false"
+              checked={!data.auto}
+              onChange={handleInputChange}
             />
-            <label htmlFor="manual" className="text-sm cursor-pointer">
+            <label htmlFor="manual" className=" cursor-pointer">
               je cree mes questions
             </label>
           </div>
@@ -121,32 +142,75 @@ function CreateQuiz() {
 
         <div
           className={`duration-200 ${
-            isChecked ? "" : "opacity-10 select-none pointer-events-none"
+            data.auto ? "" : "opacity-10 select-none pointer-events-none"
           }`}
         >
-          <p className="text-sm mb-1">
+          <p className=" mb-1">
             selectionnez le niveau de difficulter du quiz:
           </p>
-          <select className="bg-[#1A1A2F] border rounded-lg p-2 mb-1">
-            <option value="facile" className="text-sm">
-              Facile
-            </option>
-            <option value="moyen" className="text-sm">
-              Moyen
-            </option>
-            <option value="difficile" className="text-sm">
-              Difficile
-            </option>
-          </select>
-          <p className="text-sm mb-1">
-            Sélectionnez les catégories souhaitées:
-          </p>
+          <div className="flex mb-3 justify-around">
+            <label
+              className={`border py-2 px-4 rounded-full cursor-pointer duration-300 ${
+                data.lvl === "facile"
+                  ? "bg-[#6541F5] hover:bg-[#492bc3]"
+                  : "hover:bg-gray-500"
+              }`}
+            >
+              <input
+                type="radio"
+                id="facile"
+                name="lvl"
+                value="facile"
+                className="hidden"
+                checked={data.lvl === "facile"}
+                onChange={handleInputChange}
+              />
+              <span className="cursor-pointer">Facile</span>
+            </label>
+            <label
+              className={`border py-2 px-4 rounded-full cursor-pointer duration-300 ${
+                data.lvl === "moyen"
+                  ? "bg-[#6541F5] hover:bg-[#492bc3]"
+                  : "hover:bg-gray-500"
+              }`}
+            >
+              <input
+                type="radio"
+                id="moyen"
+                name="lvl"
+                value="moyen"
+                className="hidden"
+                checked={data.lvl === "moyen"}
+                onChange={handleInputChange}
+              />
+              <span className="cursor-pointer">Moyen</span>
+            </label>
+            <label
+              className={`border py-2 px-4 rounded-full cursor-pointer duration-300 ${
+                data.lvl === "difficile"
+                  ? "bg-[#6541F5] hover:bg-[#492bc3]"
+                  : "hover:bg-gray-500"
+              }`}
+            >
+              <input
+                type="radio"
+                id="difficile"
+                name="lvl"
+                value="difficile"
+                className="hidden"
+                checked={data.lvl === "difficile"}
+                onChange={handleInputChange}
+              />
+              <span className="cursor-pointer">Difficile</span>
+            </label>
+          </div>
+          <p className=" mb-1">Sélectionnez les catégories souhaitées:</p>
           <ul className="flex flex-wrap text-sm whitespace-nowrap">
             {cat.map((category) => {
               return (
                 <li
-                  className={`mr-2 border rounded-full py-1 px-2 mb-1 cursor-pointer duration-300 ${
-                    categories.includes(category)
+                  className={`mr-2 border rounded-full py-1 px-2 mb-2 cursor-pointer duration-300 ${
+                    data.categories.includes(category)
                       ? "bg-[#6541F5] hover:bg-[#492bc3]"
                       : "hover:bg-gray-500"
                   }`}
@@ -162,8 +226,9 @@ function CreateQuiz() {
         </div>
       </div>
       <button
-        className=" fixed right-5 bottom-8 rounded-lg bg-[#6541F5] py-2 px-4 hover:bg-[#886df3] duration-300 block mx-auto"
+        className="rounded-lg bg-[#6541F5] py-2 px-4 hover:bg-[#886df3] duration-300 block ml-auto"
         type="submit"
+        onClick={handleOnSubmit}
       >
         Suivant
       </button>
