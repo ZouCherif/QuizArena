@@ -59,6 +59,25 @@ const getQuestions = async (req, res) => {
   }
 };
 
+const getQuestion = async (req, res) => {
+  try {
+    const { difficulty, category, id } = req.body;
+
+    const question = await Question.aggregate([
+      { $match: { _id: { $ne: id }, difficulty, category } },
+      { $sample: { size: 1 } },
+    ]);
+    if (!question || question.length === 0) {
+      return res.status(404).json({ error: "Question not found" });
+    }
+    res.status(200).json({ question: question[0] });
+  } catch (error) {
+    console.error("Error fetching question:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   getQuestions,
+  getQuestion,
 };
