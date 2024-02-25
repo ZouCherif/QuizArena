@@ -6,17 +6,36 @@ import { useState } from "react";
 function QuestionsDisplay() {
   const location = useLocation();
   const [data, setData] = useState(location.state?.data);
+  const [loadingStates, setLoadingStates] = useState(
+    new Array(data.length).fill(false)
+  );
+
+  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
 
   const changeQuestion = async (index) => {
     try {
+      setLoadingStates((prevLoadingStates) =>
+        prevLoadingStates.map((prevState, i) =>
+          i === index ? true : prevState
+        )
+      );
       const { difficulty, category, _id } = data[index];
 
       const response = await getQuestion({ difficulty, category, id: _id });
       const newData = [...data];
       newData[index] = response.question;
       setData(newData);
+      await sleep(1000);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoadingStates((prevLoadingStates) =>
+        prevLoadingStates.map((prevState, i) =>
+          i === index ? false : prevState
+        )
+      );
     }
   };
   return (
@@ -46,13 +65,47 @@ function QuestionsDisplay() {
             />
           </div>
           <div className="bg-[#1A1A2F] p-5 mb-5 text-lg">
-            {index + 1}. {element.question}
+            {loadingStates[index] ? (
+              <div className="flex">
+                <div className="animate-pulse bg-slate-700 w-1/4 h-3 rounded-lg mr-2"></div>
+                <div className="animate-pulse bg-slate-700 w-2/4 h-3 rounded-lg mr-2"></div>
+                <div className="animate-pulse bg-slate-700 w-1/4 h-3 rounded-lg"></div>
+              </div>
+            ) : (
+              <span>
+                {index + 1}. {element.question}
+              </span>
+            )}
           </div>
           <ul className="ml-10 w-fit min-w-96">
-            <li className="bg-[#1A1A2F] p-3 mb-3">1. {element.options[0]}</li>
-            <li className="bg-[#1A1A2F] p-3 mb-3">2. {element.options[1]}</li>
-            <li className="bg-[#1A1A2F] p-3 mb-3">3. {element.options[2]}</li>
-            <li className="bg-[#1A1A2F] p-3 mb-5">4. {element.options[3]}</li>
+            <li className="bg-[#1A1A2F] p-3 mb-3">
+              {loadingStates[index] ? (
+                <div className="animate-pulse bg-slate-700 w-fill h-3 rounded-lg my-1"></div>
+              ) : (
+                <span>1. {element.options[0]}</span>
+              )}
+            </li>
+            <li className="bg-[#1A1A2F] p-3 mb-3">
+              {loadingStates[index] ? (
+                <div className="animate-pulse bg-slate-700 w-fill h-3 rounded-lg my-1"></div>
+              ) : (
+                <span>2. {element.options[1]}</span>
+              )}
+            </li>
+            <li className="bg-[#1A1A2F] p-3 mb-3">
+              {loadingStates[index] ? (
+                <div className="animate-pulse bg-slate-700 w-fill h-3 rounded-lg my-1"></div>
+              ) : (
+                <span>3. {element.options[2]}</span>
+              )}
+            </li>
+            <li className="bg-[#1A1A2F] p-3 mb-5">
+              {loadingStates[index] ? (
+                <div className="animate-pulse bg-slate-700 w-fill h-3 rounded-lg my-1"></div>
+              ) : (
+                <span>4. {element.options[3]}</span>
+              )}
+            </li>
           </ul>
         </div>
       ))}
