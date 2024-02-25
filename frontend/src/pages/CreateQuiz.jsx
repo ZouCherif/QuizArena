@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getQuestions } from "../utils/api";
+import { useNavigate } from "react-router-dom";
 
 function CreateQuiz() {
   const [data, setData] = useState({
@@ -11,6 +12,7 @@ function CreateQuiz() {
     categories: [],
     lvl: ["Moyen"],
   });
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -38,10 +40,10 @@ function CreateQuiz() {
   ];
 
   const handleOnSubmit = async () => {
-    console.log(data);
     try {
       const response = await getQuestions(data);
       console.log(response);
+      navigate("/questions", { state: { data: response.questions } });
     } catch (e) {
       console.log(e);
     }
@@ -54,7 +56,7 @@ function CreateQuiz() {
           value={data.type}
           name="type"
           onChange={handleInputChange}
-          className="bg-[#1A1A2F] border rounded-lg p-2"
+          className="bg-[#1A1A2F] border rounded-lg p-2 cursor-pointer"
         >
           <option value="publique">publique</option>
           <option value="privée">privée</option>

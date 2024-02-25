@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Home, CreateQuiz, AddQuestions } from "./pages";
+import { Home, CreateQuiz, AddQuestions, QuestionsDisplay } from "./pages";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function App() {
@@ -17,7 +17,8 @@ function App() {
           }
         />
         <Route path="/createQuiz" element={<CreateQuiz />} />
-        <Route path="/addQuestions" element={<AddQuestions />}/>
+        <Route path="/questions" element={<QuestionsDisplay />} />
+        <Route path="/addQuestions" element={<AddQuestions />} />
       </Routes>
     </Router>
   );
