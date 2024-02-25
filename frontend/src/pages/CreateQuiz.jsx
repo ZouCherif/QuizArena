@@ -9,7 +9,7 @@ function CreateQuiz() {
     nbQ: 0,
     auto: true,
     categories: [],
-    lvl: ["moyen"],
+    lvl: ["Moyen"],
   });
 
   const handleInputChange = (e) => {
@@ -27,7 +27,7 @@ function CreateQuiz() {
 
   const cat = [
     "Mathematiques",
-    "Histoire geo",
+    "Histoire",
     "Langues",
     "Culture generale",
     "Science",
@@ -37,8 +37,14 @@ function CreateQuiz() {
     "TV & Films",
   ];
 
-  const handleOnSubmit = () => {
+  const handleOnSubmit = async () => {
     console.log(data);
+    try {
+      const response = await getQuestions(data);
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    }
   };
   return (
     <div className="bg-[#1A1A2F] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-lg z-20 sm:w-[700px] w-screen sm:h-5/6 h-screen overflow-auto px-10 py-4 select-none">
@@ -145,54 +151,54 @@ function CreateQuiz() {
           <div className="flex mb-3 justify-around">
             <label
               className={`border py-2 px-4 rounded-full cursor-pointer duration-300 ${
-                data.lvl.includes("facile")
+                data.lvl.includes("Facile")
                   ? "bg-[#6541F5] hover:bg-[#492bc3]"
                   : "hover:bg-gray-500"
               }`}
             >
               <input
                 type="checkbox"
-                id="facile"
+                id="Facile"
                 name="lvl"
-                value="facile"
+                value="Facile"
                 className="hidden"
-                checked={data.lvl.includes("facile")}
+                checked={data.lvl.includes("Facile")}
                 onChange={handleInputChange}
               />
               <span className="cursor-pointer">Facile</span>
             </label>
             <label
               className={`border py-2 px-4 rounded-full cursor-pointer duration-300 ${
-                data.lvl.includes("moyen")
+                data.lvl.includes("Moyen")
                   ? "bg-[#6541F5] hover:bg-[#492bc3]"
                   : "hover:bg-gray-500"
               }`}
             >
               <input
                 type="checkbox"
-                id="moyen"
+                id="Moyen"
                 name="lvl"
-                value="moyen"
+                value="Moyen"
                 className="hidden"
-                checked={data.lvl.includes("moyen")}
+                checked={data.lvl.includes("Moyen")}
                 onChange={handleInputChange}
               />
               <span className="cursor-pointer">Moyen</span>
             </label>
             <label
               className={`border py-2 px-4 rounded-full cursor-pointer duration-300 ${
-                data.lvl.includes("difficile")
+                data.lvl.includes("Difficile")
                   ? "bg-[#6541F5] hover:bg-[#492bc3]"
                   : "hover:bg-gray-500"
               }`}
             >
               <input
                 type="checkbox"
-                id="difficile"
+                id="Difficile"
                 name="lvl"
-                value="difficile"
+                value="Difficile"
                 className="hidden"
-                checked={data.lvl.includes("difficile")}
+                checked={data.lvl.includes("Difficile")}
                 onChange={handleInputChange}
               />
               <span className="cursor-pointer">Difficile</span>

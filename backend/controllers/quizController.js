@@ -4,21 +4,54 @@ const getQuestions = async (req, res) => {
   try {
     const { name, type, nbP, nbQ, categories, lvl } = req.body;
 
-    const questionsPerCategoryPerLevel = Math.floor(
-      nbQ / (categories.length * lvl.length)
+    //filter the categories
+    const totalCategories = categories.length;
+    const totalLevels = lvl.length;
+
+    const totalQuestionsPerCategoryPerLevel = Math.floor(
+      nbQ / (totalCategories * totalLevels)
     );
 
-    const questions = [];
+    let remainingQuestions =
+      nbQ - totalQuestionsPerCategoryPerLevel * totalCategories * totalLevels;
+
+    const questionsConfig = [];
     for (const category of categories) {
       for (const level of lvl) {
-        const fetchedQuestions = await Question.aggregate([
-          { $match: { category, level } },
-          { $sample: { size: questionsPerCategoryPerLevel } },
-        ]);
-        questions.push(...fetchedQuestions);
+        questionsConfig.push({
+          category,
+          level,
+          count: totalQuestionsPerCategoryPerLevel,
+        });
       }
     }
-    console.log(questions);
+    questionsConfig.sort((a, b) => {
+      const levelOrder = { facile: 0, moyen: 1, difficile: 2 };
+      return (
+        levelOrder[a.level.toLowerCase()] - levelOrder[b.level.toLowerCase()]
+      );
+    });
+
+    while (remainingQuestions > 0) {
+      for (let i = questionsConfig.length - 1; i >= 0; i--) {
+        if (remainingQuestions > 0) {
+          questionsConfig[i].count++;
+          remainingQuestions--;
+        }
+        if (remainingQuestions === 0) {
+          break;
+        }
+      }
+    }
+
+    const questions = [];
+    for (const element of questionsConfig) {
+      const fetchedQuestions = await Question.aggregate([
+        { $match: { category: element.category, difficulty: element.level } },
+        { $sample: { size: element.count } },
+      ]);
+      questions.push(...fetchedQuestions);
+    }
     res.status(200).json({ questions });
   } catch (error) {
     console.error("Error fetching questions:", error);
