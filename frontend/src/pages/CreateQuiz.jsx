@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { getQuestions } from "../utils/api";
+
 function CreateQuiz() {
   const [data, setData] = useState({
     name: "",
@@ -7,16 +9,20 @@ function CreateQuiz() {
     nbQ: 0,
     auto: true,
     categories: [],
-    lvl: "moyen",
+    lvl: ["moyen"],
   });
 
   const handleInputChange = (e) => {
-    const { name, value, type } = e.target;
-    setData({
-      ...data,
+    const { name, value, type, checked } = e.target;
+    setData((prevData) => ({
+      ...prevData,
       [name]:
-        type === "radio" ? (name === "auto" ? value === "true" : value) : value,
-    });
+        type === "checkbox"
+          ? checked
+            ? [...prevData[name], value]
+            : prevData[name].filter((item) => item !== value)
+          : value,
+    }));
   };
 
   const cat = [
@@ -30,18 +36,6 @@ function CreateQuiz() {
     "Musique",
     "TV & Films",
   ];
-
-  const handleCategories = (e) => {
-    const categoryName = e.target.getAttribute("data-name");
-    if (!data.categories.includes(categoryName)) {
-      setData({ ...data, categories: [...data.categories, categoryName] });
-    } else {
-      const updatedCategories = data.categories.filter(
-        (category) => category !== categoryName
-      );
-      setData({ ...data, categories: updatedCategories });
-    }
-  };
 
   const handleOnSubmit = () => {
     console.log(data);
@@ -151,78 +145,84 @@ function CreateQuiz() {
           <div className="flex mb-3 justify-around">
             <label
               className={`border py-2 px-4 rounded-full cursor-pointer duration-300 ${
-                data.lvl === "facile"
+                data.lvl.includes("facile")
                   ? "bg-[#6541F5] hover:bg-[#492bc3]"
                   : "hover:bg-gray-500"
               }`}
             >
               <input
-                type="radio"
+                type="checkbox"
                 id="facile"
                 name="lvl"
                 value="facile"
                 className="hidden"
-                checked={data.lvl === "facile"}
+                checked={data.lvl.includes("facile")}
                 onChange={handleInputChange}
               />
               <span className="cursor-pointer">Facile</span>
             </label>
             <label
               className={`border py-2 px-4 rounded-full cursor-pointer duration-300 ${
-                data.lvl === "moyen"
+                data.lvl.includes("moyen")
                   ? "bg-[#6541F5] hover:bg-[#492bc3]"
                   : "hover:bg-gray-500"
               }`}
             >
               <input
-                type="radio"
+                type="checkbox"
                 id="moyen"
                 name="lvl"
                 value="moyen"
                 className="hidden"
-                checked={data.lvl === "moyen"}
+                checked={data.lvl.includes("moyen")}
                 onChange={handleInputChange}
               />
               <span className="cursor-pointer">Moyen</span>
             </label>
             <label
               className={`border py-2 px-4 rounded-full cursor-pointer duration-300 ${
-                data.lvl === "difficile"
+                data.lvl.includes("difficile")
                   ? "bg-[#6541F5] hover:bg-[#492bc3]"
                   : "hover:bg-gray-500"
               }`}
             >
               <input
-                type="radio"
+                type="checkbox"
                 id="difficile"
                 name="lvl"
                 value="difficile"
                 className="hidden"
-                checked={data.lvl === "difficile"}
+                checked={data.lvl.includes("difficile")}
                 onChange={handleInputChange}
               />
               <span className="cursor-pointer">Difficile</span>
             </label>
           </div>
           <p className=" mb-1">Sélectionnez les catégories souhaitées:</p>
-          <ul className="flex flex-wrap text-sm whitespace-nowrap">
+          <div className="flex flex-wrap text-sm whitespace-nowrap">
             {cat.map((category) => {
               return (
-                <li
+                <label
                   className={`mr-2 border rounded-full py-1 px-2 mb-2 cursor-pointer duration-300 ${
                     data.categories.includes(category)
                       ? "bg-[#6541F5] hover:bg-[#492bc3]"
                       : "hover:bg-gray-500"
                   }`}
-                  data-name={category}
-                  onClick={handleCategories}
                   key={category}
                 >
-                  {category}
-                </li>
+                  <input
+                    type="checkbox"
+                    value={category}
+                    name="categories"
+                    onChange={handleInputChange}
+                    className="hidden"
+                    checked={data.categories.includes(category)}
+                  />
+                  <span className="cursor-pointer">{category}</span>
+                </label>
               );
             })}
-          </ul>
+          </div>
         </div>
       </div>
       <button

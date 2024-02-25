@@ -41,3 +41,10 @@ export const logout = async (data) => {
     console.log(err);
   }
 };
+
+export const getQuesions = async (data) => {
+  const response = await api.post("/getQuestions", data, {
+    withCredentials: true,
+  });
+  return response.data;
+};
