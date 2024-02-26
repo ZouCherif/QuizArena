@@ -4,7 +4,6 @@ const getQuestions = async (req, res) => {
   try {
     const { name, type, nbP, nbQ, categories, lvl } = req.body;
 
-    //filter the categories
     const totalCategories = categories.length;
     const totalLevels = lvl.length;
 

@@ -1,14 +1,15 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { IoRefreshSharp } from "react-icons/io5";
 import { getQuestion } from "../utils/api";
 import { useState } from "react";
 
 function QuestionsDisplay() {
   const location = useLocation();
-  const [data, setData] = useState(location.state?.data);
+  const [data, setData] = useState(location.state?.data || []);
   const [loadingStates, setLoadingStates] = useState(
     new Array(data.length).fill(false)
   );
+  const navigate = useNavigate();
 
   function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -38,6 +39,7 @@ function QuestionsDisplay() {
       );
     }
   };
+
   return (
     <div className="max-w-[1200px] mx-auto px-2 py-6">
       <div className="xs:text-5xl text-center font-semibold mb-7 select-none text-3xl">
@@ -57,9 +59,19 @@ function QuestionsDisplay() {
         <div key={index}>
           <div className="flex justify-end items-center mb-1">
             <p className="mr-2 text-sm">{element.category}</p>
-            <p className="mr-2 text-sm">{element.difficulty}</p>
+            <p
+              className={`mr-2 text-sm px-2 rounded-full ${
+                element.difficulty === "Facile"
+                  ? "bg-green-700"
+                  : element.difficulty === "Moyen"
+                  ? "bg-orange-600"
+                  : "bg-red-800"
+              }`}
+            >
+              {element.difficulty}
+            </p>
             <IoRefreshSharp
-              className="hover:bg-slate-700 duration-500 rounded-full cursor-pointer p-1"
+              className="hover:bg-slate-700 duration-500 rounded-full cursor-pointer p-1 hover:rotate-180"
               size={30}
               onClick={() => changeQuestion(index)}
             />
@@ -111,7 +123,10 @@ function QuestionsDisplay() {
       ))}
       <hr className="mb-4 mx-4" />
       <div className="flex justify-between">
-        <button className="py-2 px-8 hover:bg-gray-500 bg-gray-600 rounded-lg duration-300">
+        <button
+          className="py-2 px-8 hover:bg-gray-500 bg-gray-600 rounded-lg duration-300"
+          onClick={() => navigate(-1, { replace: true })}
+        >
           Retour
         </button>
         <div>
