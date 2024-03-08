@@ -5,6 +5,7 @@ import QuizValidation from "./QuizValidation";
 import QuestionsDisplay from "./QuestionsDisplay";
 import Lobby from "./Lobby";
 import GetReady from "./GetReady";
+import Join from "./Join";
 
 export {
   Home,
@@ -14,4 +15,5 @@ export {
   QuizValidation,
   Lobby,
   GetReady,
+  Join,
 };

@@ -7,6 +7,7 @@ import {
   Lobby,
   GetReady,
   QuizValidation,
+  Join,
 } from "./pages";
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -26,10 +27,11 @@ function App() {
           }
         />
         <Route path="/createQuiz" element={<CreateQuiz />} />
-        <Route path="/:id/questions" element={<QuestionsDisplay />} />
+        <Route path="/session/:id/questions" element={<QuestionsDisplay />} />
         <Route path="/addQuestions" element={<AddQuestions />} />
-        <Route path="/:id/lobby" element={<Lobby />} />
-        <Route path="/:id/getReady" element={<GetReady />} />
+        <Route path="/session/:id/lobby" element={<Lobby />} />
+        <Route path="/session/:id/getReady" element={<GetReady />} />
+        <Route path="/session/:id/join" element={<Join />} />
         <Route path="/addQuestions" element={<AddQuestions />} />
         <Route path="/QuizValidation" element={<QuizValidation />} />
         <Route path="/questions" element={<QuestionsDisplay />} />
