@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { IoRefreshSharp } from "react-icons/io5";
 import { getQuestion } from "../utils/api";
 import { useState } from "react";
@@ -9,6 +9,7 @@ function QuestionsDisplay() {
   const [loadingStates, setLoadingStates] = useState(
     new Array(data.length).fill(false)
   );
+  const { id } = useParams();
   const navigate = useNavigate();
 
   function sleep(ms) {
@@ -40,6 +41,9 @@ function QuestionsDisplay() {
     }
   };
 
+  const OnValidate = async () => {
+    navigate(`/${id}/lobby`);
+  };
   return (
     <div className="max-w-[1200px] mx-auto px-2 py-6">
       <div className="xs:text-5xl text-center font-semibold mb-7 select-none text-3xl">
@@ -133,7 +137,10 @@ function QuestionsDisplay() {
           <button className="py-2 px-8 hover:bg-green-600 bg-green-700 rounded-lg duration-300 mr-4">
             Sauvegarder
           </button>
-          <button className="py-2 px-8 bg-[#6541F5] hover:bg-[#492bc3] rounded-lg duration-300">
+          <button
+            className="py-2 px-8 bg-[#6541F5] hover:bg-[#492bc3] rounded-lg duration-300"
+            onClick={OnValidate}
+          >
             Valider
           </button>
         </div>

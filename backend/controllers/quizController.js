@@ -1,4 +1,5 @@
 const Question = require("../models/Question");
+const Session = require("../models/Session");
 
 const getQuestions = async (req, res) => {
   try {
@@ -43,6 +44,25 @@ const getQuestions = async (req, res) => {
       }
     }
 
+    const generateSessionCode = () =>
+      Math.floor(100000 + Math.random() * 900000);
+    let sessionCode;
+    do {
+      sessionCode = generateSessionCode();
+    } while (await Session.exists({ sessionCode }));
+
+    const session = new Session({
+      sessionCode,
+      name,
+      type,
+      difficulty: questionsConfig[questionsConfig.length - 1].level,
+      nbP,
+      nbQ,
+      categories,
+    });
+
+    await session.save();
+
     const questions = [];
     for (const element of questionsConfig) {
       const fetchedQuestions = await Question.aggregate([
@@ -51,7 +71,7 @@ const getQuestions = async (req, res) => {
       ]);
       questions.push(...fetchedQuestions);
     }
-    res.status(200).json({ questions });
+    res.status(200).json({ id: session._id, questions });
   } catch (error) {
     console.error("Error fetching questions:", error);
     res.status(500).json({ error: "Internal Server Error" });

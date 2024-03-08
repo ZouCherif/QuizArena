@@ -9,6 +9,8 @@ const corsOptions = require("./config/corsOptions");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const connectDB = require("./config/dbConn");
+const socketIo = require("socket.io");
+const http = require("http");
 
 connectDB();
 app.use(logger);
@@ -28,7 +30,56 @@ app.all("*", (req, res) => {
 
 app.use(errorHandler);
 
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
+
+const sessions = {};
+
+io.on("connection", (socket) => {
+  console.log("a user connected");
+  socket.on("create session", ({ sessionId }) => {
+    sessions[sessionId] = { id: sessionId, players: [] };
+    console.log(`Session created: ${sessionId}`);
+    io.emit("session created", sessions[sessionId]);
+  });
+
+  socket.on("join session", ({ sessionId, playerName }) => {
+    if (!sessions[sessionId]) {
+      socket.emit("invalid session", "Invalid session ID");
+      return;
+    }
+
+    sessions[sessionId].players.push({ id: socket.id, name: playerName });
+
+    socket.join(sessionId);
+    console.log(`${playerName} joined session ${sessionId}`);
+
+    io.to(sessionId).emit("player joined", { sessionId, playerName });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("A user disconnected");
+
+    for (const sessionId in sessions) {
+      const session = sessions[sessionId];
+      const playerIndex = session.players.findIndex(
+        (player) => player.id === socket.id
+      );
+      if (playerIndex !== -1) {
+        const playerName = session.players[playerIndex].name;
+        session.players.splice(playerIndex, 1);
+        io.to(sessionId).emit("player left", { sessionId, playerName });
+      }
+    }
+  });
+});
+
 mongoose.connection.once("open", () => {
   console.log("Connected to MongoDB");
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 });

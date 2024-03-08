@@ -1,5 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Home, CreateQuiz, AddQuestions, QuestionsDisplay } from "./pages";
+import {
+  Home,
+  CreateQuiz,
+  AddQuestions,
+  QuestionsDisplay,
+  Lobby,
+  GetReady,
+} from "./pages";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function App() {
@@ -17,8 +24,10 @@ function App() {
           }
         />
         <Route path="/createQuiz" element={<CreateQuiz />} />
-        <Route path="/questions" element={<QuestionsDisplay />} />
+        <Route path="/:id/questions" element={<QuestionsDisplay />} />
         <Route path="/addQuestions" element={<AddQuestions />} />
+        <Route path="/:id/lobby" element={<Lobby />} />
+        <Route path="/:id/getReady" element={<GetReady />} />
       </Routes>
     </Router>
   );

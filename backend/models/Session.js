@@ -21,6 +21,10 @@ const sessionSchema = new mongoose.Schema({
     enum: ["Facile", "Moyen", "Difficile"],
     required: true,
   },
+  categories: {
+    type: [String],
+    required: true,
+  },
   nbP: {
     type: Number,
     required: true,
@@ -33,24 +37,6 @@ const sessionSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-});
-
-sessionSchema.pre("save", async function (next) {
-  const generateSessionCode = () => Math.floor(100000 + Math.random() * 900000);
-
-  if (
-    !this.sessionCode ||
-    isNaN(this.sessionCode) ||
-    (await this.constructor.exists({ sessionCode: this.sessionCode }))
-  ) {
-    let code;
-    do {
-      code = generateSessionCode();
-    } while (await this.constructor.exists({ sessionCode: code }));
-    this.sessionCode = code;
-  }
-
-  next();
 });
 
 module.exports = mongoose.model("Session", sessionSchema);
