@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import io from "socket.io-client";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 function GetReady() {
   const { id } = useParams();
@@ -14,12 +14,12 @@ function GetReady() {
       console.log(`error: ${message}`);
     });
 
-    socket.on("player joined", ({ sessionId, playerName }) => {
-      console.log(`${playerName} joined session ${sessionId}`);
+    socket.on("player joined", (playerName) => {
+      console.log(`${playerName} joined`);
     });
 
-    socket.on("player left", ({ sessionId, playerName }) => {
-      console.log(`${playerName} left session ${sessionId}`);
+    socket.on("player left", (playerName) => {
+      console.log(`${playerName} left`);
     });
 
     socket.on("question", (question) => {
@@ -33,7 +33,7 @@ function GetReady() {
   }, [id, socket]);
 
   const handleSubmitAnswer = (answer) => {
-    socket.emit("answer", answer);
+    socket.emit("submit answer", answer);
   };
   return (
     <div>

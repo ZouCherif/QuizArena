@@ -41,24 +41,10 @@ const io = socketIo(server, {
 
 const activeSessions = {};
 
-// const startLobbyTimer = (sessionId, durationInSeconds) => {
-//   activeSessions[sessionId].sessionTimer = setTimeout(() => {
-//     io.to(sessionId).emit("LobbyTimeout");
-//   }, durationInSeconds * 1000);
-// };
-
-// const startQuestionTimer = (sessionId, durationInSeconds) => {
-//   activeSessions[sessionId].questionTimer = setTimeout(() => {
-//     io.to(sessionId).emit("questionTimeout");
-//   }, durationInSeconds * 1000);
-// };
-
 function sendQuestion(sessionId, question) {
   io.to(sessionId).emit("question", question);
 }
 function verifyAnswers(sessionId) {
-  // Retrieve submitted answers and verify them
-  // Send "correct" or "incorrect" responses to players accordingly
   console.log("verifying...");
 }
 
@@ -69,6 +55,7 @@ io.on("connection", (socket) => {
   socket.on("create session", ({ sessionId }) => {
     activeSessions[sessionId] = { id: sessionId, players: [] };
     console.log(`Session created: ${sessionId}`);
+    socket.join(sessionId);
     io.emit("session created", activeSessions[sessionId]);
   });
 
@@ -83,7 +70,7 @@ io.on("connection", (socket) => {
     socket.join(sessionId);
     console.log(`${playerName} joined session ${sessionId}`);
 
-    io.to(sessionId).emit("player joined", { sessionId, playerName });
+    io.to(sessionId).emit("player joined", playerName);
   });
 
   socket.on("start quiz", async ({ sessionId }) => {
@@ -112,7 +99,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("submit answer", ({ answer }) => {
+  socket.on("submit answer", (answer) => {
     console.log(answer);
   });
 

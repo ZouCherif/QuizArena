@@ -30,3 +30,17 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.player-join-animation {
+  animation: fadeOut 2s linear forwards;
+  opacity: 1;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

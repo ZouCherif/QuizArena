@@ -1,3 +1,4 @@
 import NavBar from "./NavBar";
-
-export { NavBar };
+import Timer from "./lobby/Timer";
+import DisplayPlayers from "./lobby/DisplayPlayers";
+export { NavBar, Timer, DisplayPlayers };
