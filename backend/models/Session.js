@@ -33,6 +33,12 @@ const sessionSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  questions: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Question",
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,

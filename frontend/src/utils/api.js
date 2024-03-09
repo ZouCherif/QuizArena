@@ -43,14 +43,21 @@ export const logout = async (data) => {
 };
 
 export const getQuestions = async (data) => {
-  const response = await api.post("/getQuestions", data, {
+  const response = await api.post("/questions", data, {
     withCredentials: true,
   });
   return response.data;
 };
 
 export const getQuestion = async (data) => {
-  const response = await api.post("/getQuestions/single", data, {
+  const response = await api.post("/questions/single", data, {
+    withCredentials: true,
+  });
+  return response.data;
+};
+
+export const saveQuestions = async (data) => {
+  const response = await api.post("/questions/save", data, {
     withCredentials: true,
   });
   return response.data;

@@ -1,6 +1,6 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { IoRefreshSharp } from "react-icons/io5";
-import { getQuestion } from "../utils/api";
+import { getQuestion, saveQuestions } from "../utils/api";
 import { useState } from "react";
 
 function QuestionsDisplay() {
@@ -42,7 +42,13 @@ function QuestionsDisplay() {
   };
 
   const OnValidate = async () => {
-    navigate(`/${id}/lobby`);
+    try {
+      const response = await saveQuestions({ data, id });
+      console.log(response.message);
+      navigate(`/session/${id}/lobby`);
+    } catch (e) {
+      console.log(e);
+    }
   };
   return (
     <div className="max-w-[1200px] mx-auto px-2 py-6">

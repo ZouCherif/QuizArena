@@ -4,8 +4,10 @@ import { useNavigate, useParams } from "react-router-dom";
 
 function GetReady() {
   const { id } = useParams();
+  const [qst, setQst] = useState(null);
+  const [options, setOptions] = useState([]);
+  const socket = io("http://localhost:3500");
   useEffect(() => {
-    const socket = io("http://localhost:3500");
     socket.emit("join session", { sessionId: id, playerName: "cherif" });
 
     socket.on("invalid session", (message) => {
@@ -20,15 +22,36 @@ function GetReady() {
       console.log(`${playerName} left session ${sessionId}`);
     });
 
-    socket.on("answer submitted", ({ playerName, answer }) => {
-      console.log(`${playerName} submitted answer: ${answer}`);
+    socket.on("question", (question) => {
+      setQst(question.question);
+      setOptions(question.options);
     });
 
     return () => {
       socket.removeAllListeners();
     };
-  }, []);
-  return <div>GetReady</div>;
+  }, [id, socket]);
+
+  const handleSubmitAnswer = (answer) => {
+    socket.emit("answer", answer);
+  };
+  return (
+    <div>
+      <h1 className="text-3xl text-center">{qst}</h1>
+      <ul className="flex justify-around">
+        {options.map((option) => {
+          return (
+            <li
+              onClick={() => handleSubmitAnswer(option)}
+              className="cursor-pointer"
+            >
+              {option}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
 }
 
 export default GetReady;

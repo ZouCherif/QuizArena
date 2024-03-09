@@ -4,8 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 function Lobby() {
   const { id } = useParams();
+  const socket = io("http://localhost:3500");
   useEffect(() => {
-    const socket = io("http://localhost:3500");
     socket.emit("create session", { sessionId: id });
 
     socket.on("session created", (session) => {
@@ -20,6 +20,10 @@ function Lobby() {
       console.log(`${playerName} left session ${sessionId}`);
     });
 
+    socket.on("errorEvent", ({ message }) => {
+      console.log(`${message}`);
+    });
+
     socket.on("answer submitted", ({ playerName, answer }) => {
       console.log(`${playerName} submitted answer: ${answer}`);
     });
@@ -27,8 +31,22 @@ function Lobby() {
     return () => {
       socket.removeAllListeners();
     };
-  }, []);
-  return <div>Lobby</div>;
+  }, [id, socket]);
+
+  const handleStartQuiz = () => {
+    socket.emit("start quiz", { sessionId: id });
+  };
+  return (
+    <div>
+      Lobby
+      <button
+        className="rounded-lg bg-[#6541F5] px-6 py-2 hover:bg-[#886df3] duration-300 block text-xl"
+        onClick={handleStartQuiz}
+      >
+        start
+      </button>
+    </div>
+  );
 }
 
 export default Lobby;

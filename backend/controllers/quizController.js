@@ -96,7 +96,24 @@ const getQuestion = async (req, res) => {
   }
 };
 
+const setQuizQuestions = async (req, res) => {
+  try {
+    const { data, id } = req.body;
+    if (!data || !id)
+      return res.status(404).json({ message: "data and id required" });
+    const session = await Session.findById(id);
+    if (!session) return res.status(404).json({ message: "session not found" });
+    session.questions = data;
+    await session.save();
+    res.status(200).json({ message: "questions saved successfully" });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   getQuestions,
   getQuestion,
+  setQuizQuestions,
 };

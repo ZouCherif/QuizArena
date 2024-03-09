@@ -11,6 +11,7 @@ const mongoose = require("mongoose");
 const connectDB = require("./config/dbConn");
 const socketIo = require("socket.io");
 const http = require("http");
+const Session = require("./models/Session");
 
 connectDB();
 app.use(logger);
@@ -21,7 +22,7 @@ app.use(cookieParser());
 app.use("/register", require("./routes/auth/register"));
 app.use("/login", require("./routes/auth/login"));
 app.use("/logout", require("./routes/auth/logout"));
-app.use("/getQuestions", require("./routes/quiz/quesions"));
+app.use("/questions", require("./routes/quiz/quesions"));
 
 app.all("*", (req, res) => {
   res.status(404);
@@ -38,23 +39,46 @@ const io = socketIo(server, {
   },
 });
 
-const sessions = {};
+const activeSessions = {};
+
+// const startLobbyTimer = (sessionId, durationInSeconds) => {
+//   activeSessions[sessionId].sessionTimer = setTimeout(() => {
+//     io.to(sessionId).emit("LobbyTimeout");
+//   }, durationInSeconds * 1000);
+// };
+
+// const startQuestionTimer = (sessionId, durationInSeconds) => {
+//   activeSessions[sessionId].questionTimer = setTimeout(() => {
+//     io.to(sessionId).emit("questionTimeout");
+//   }, durationInSeconds * 1000);
+// };
+
+function sendQuestion(sessionId, question) {
+  io.to(sessionId).emit("question", question);
+}
+function verifyAnswers(sessionId) {
+  // Retrieve submitted answers and verify them
+  // Send "correct" or "incorrect" responses to players accordingly
+  console.log("verifying...");
+}
 
 io.on("connection", (socket) => {
   console.log("a user connected");
+  let answerTimeout;
+
   socket.on("create session", ({ sessionId }) => {
-    sessions[sessionId] = { id: sessionId, players: [] };
+    activeSessions[sessionId] = { id: sessionId, players: [] };
     console.log(`Session created: ${sessionId}`);
-    io.emit("session created", sessions[sessionId]);
+    io.emit("session created", activeSessions[sessionId]);
   });
 
   socket.on("join session", ({ sessionId, playerName }) => {
-    if (!sessions[sessionId]) {
+    if (!activeSessions[sessionId]) {
       socket.emit("invalid session", "Invalid session ID");
       return;
     }
 
-    sessions[sessionId].players.push({ id: socket.id, name: playerName });
+    activeSessions[sessionId].players.push({ id: socket.id, name: playerName });
 
     socket.join(sessionId);
     console.log(`${playerName} joined session ${sessionId}`);
@@ -62,11 +86,42 @@ io.on("connection", (socket) => {
     io.to(sessionId).emit("player joined", { sessionId, playerName });
   });
 
+  socket.on("start quiz", async ({ sessionId }) => {
+    try {
+      if (!activeSessions[sessionId]) {
+        socket.emit("invalid session", "Invalid session ID");
+        return;
+      }
+
+      const session = await Session.findById(sessionId).populate("questions");
+      const questions = session.questions;
+      sendQuestion(sessionId, questions.shift());
+
+      answerTimeout = setInterval(() => {
+        verifyAnswers(sessionId);
+        const nextQuestion = questions.shift();
+        if (nextQuestion) {
+          sendQuestion(sessionId, nextQuestion);
+        } else {
+          clearInterval(answerTimeout);
+          console.log("Quiz ended");
+        }
+      }, 20000);
+    } catch (e) {
+      socket.emit("errorEvent", { message: "An error occurred" });
+    }
+  });
+
+  socket.on("submit answer", ({ answer }) => {
+    console.log(answer);
+  });
+
   socket.on("disconnect", () => {
     console.log("A user disconnected");
+    // clearTimeout(answerTimeout);
 
-    for (const sessionId in sessions) {
-      const session = sessions[sessionId];
+    for (const sessionId in activeSessions) {
+      const session = activeSessions[sessionId];
       const playerIndex = session.players.findIndex(
         (player) => player.id === socket.id
       );

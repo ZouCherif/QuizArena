@@ -43,7 +43,7 @@ function CreateQuiz() {
     try {
       const response = await getQuestions(data);
       console.log(response);
-      navigate(`/${response.id}/questions`, {
+      navigate(`/session/${response.id}/questions`, {
         state: { data: response.questions },
       });
     } catch (e) {
