@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { joinSession } from "../../utils/api";
+import { useNavigate } from "react-router-dom";
 
 function SessionCode() {
   const [inputValue, setInputValue] = useState("");
+  const navigate = useNavigate();
 
   const handleInput = (e) => {
     setInputValue(e.target.value);
@@ -16,7 +18,7 @@ function SessionCode() {
     }
     try {
       const response = await joinSession(sessionCode);
-      console.log(response);
+      navigate(`/session/${response.sessionId}/join`);
     } catch (e) {
       console.log(e);
     }
