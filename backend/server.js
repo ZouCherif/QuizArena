@@ -22,7 +22,8 @@ app.use(cookieParser());
 app.use("/register", require("./routes/auth/register"));
 app.use("/login", require("./routes/auth/login"));
 app.use("/logout", require("./routes/auth/logout"));
-app.use("/questions", require("./routes/quiz/quesions"));
+app.use("/questions", require("./routes/questions/quesions"));
+app.use("/join", require("./routes/sessions/sessions"));
 
 app.all("*", (req, res) => {
   res.status(404);

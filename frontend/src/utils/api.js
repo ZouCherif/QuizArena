@@ -24,6 +24,7 @@ export const createUser = async (data) => {
   });
   return response.data;
 };
+
 export const login = async (data) => {
   const response = await api.post("/login", data, {
     withCredentials: true,
@@ -58,6 +59,13 @@ export const getQuestion = async (data) => {
 
 export const saveQuestions = async (data) => {
   const response = await api.post("/questions/save", data, {
+    withCredentials: true,
+  });
+  return response.data;
+};
+
+export const joinSession = async (sessionCode) => {
+  const response = await api.get(`/join/${sessionCode}`, {
     withCredentials: true,
   });
   return response.data;

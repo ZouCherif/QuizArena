@@ -1,4 +1,4 @@
-import { NavBar } from "../components";
+import { NavBar, SessionCode } from "../components";
 import { useAuth } from "../context/AuthContext";
 
 function Home() {
@@ -11,6 +11,9 @@ function Home() {
   return (
     <div>
       <NavBar />
+      <main className="max-w-[1500px] mx-auto">
+        <SessionCode />
+      </main>
       <button onClick={handleLogout}>logout</button>
     </div>
   );
