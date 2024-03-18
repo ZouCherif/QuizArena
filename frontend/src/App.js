@@ -9,7 +9,7 @@ import {
   QuizValidation,
   Join,
 } from "./pages";
-
+import RequireAuth from "./components/RequireAuth";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function App() {
@@ -26,16 +26,20 @@ function App() {
             </GoogleOAuthProvider>
           }
         />
-        <Route path="/createQuiz" element={<CreateQuiz />} />
-        <Route path="/session/:id/questions" element={<QuestionsDisplay />} />
-        <Route path="/addQuestions" element={<AddQuestions />} />
-        <Route path="/session/:id/lobby" element={<Lobby />} />
-        <Route path="/session/:id/getReady" element={<GetReady />} />
-        <Route path="/session/:id/join" element={<Join />} />
-        <Route path="/addQuestions" element={<AddQuestions />} />
-        <Route path="/QuizValidation" element={<QuizValidation />} />
-        <Route path="/questions" element={<QuestionsDisplay />} />
-        <Route path="/addQuestions" element={<AddQuestions />} />
+        {/* <Route element={<RequireAuth />}> */}
+          <Route path="/createQuiz" element={<CreateQuiz />} />
+          <Route path="/addQuestions" element={<AddQuestions />} />
+          <Route path="session" >
+            <Route path=":id/questions" element={<QuestionsDisplay />} />
+            <Route path=":id/lobby" element={<Lobby />} />
+            <Route path=":id/getReady" element={<GetReady />} />
+            <Route path=":id/join" element={<Join />} />
+          </Route>
+          <Route path="/addQuestions" element={<AddQuestions />} />
+          <Route path="/QuizValidation" element={<QuizValidation />} />
+          <Route path="/questions" element={<QuestionsDisplay />} />
+          <Route path="/addQuestions" element={<AddQuestions />} />
+        {/* </Route> */}
       </Routes>
     </Router>
   );
