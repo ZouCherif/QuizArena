@@ -51,7 +51,6 @@ function verifyAnswers(sessionId) {
 
 io.on("connection", (socket) => {
   console.log("a user connected");
-  let answerTimeout;
 
   socket.on("create session", ({ sessionId }) => {
     activeSessions[sessionId] = { id: sessionId, players: [] };
@@ -82,21 +81,25 @@ io.on("connection", (socket) => {
       }
 
       const session = await Session.findById(sessionId).populate("questions");
-      const questions = session.questions;
-      sendQuestion(sessionId, questions.shift());
-
-      answerTimeout = setInterval(() => {
-        verifyAnswers(sessionId);
-        const nextQuestion = questions.shift();
-        if (nextQuestion) {
-          sendQuestion(sessionId, nextQuestion);
-        } else {
-          clearInterval(answerTimeout);
-          console.log("Quiz ended");
-        }
-      }, 20000);
+      activeSessions[sessionId].questions = session.questions;
+      sendQuestion(sessionId, activeSessions[sessionId].questions.shift());
+      console.log(activeSessions[sessionId].questions);
     } catch (e) {
       socket.emit("errorEvent", { message: "An error occurred" });
+    }
+  });
+
+  socket.on("next question", ({ sessionId }) => {
+    if (activeSessions[sessionId] && activeSessions[sessionId].questions) {
+      const questions = activeSessions[sessionId].questions;
+      if (questions.length > 0) {
+        const question = questions.shift();
+        sendQuestion(sessionId, question);
+      } else {
+        console.log("No more questions available for this session");
+      }
+    } else {
+      console.log("Session or questions not initialized");
     }
   });
 

@@ -28,6 +28,10 @@ function Lobby() {
     socket.emit("start quiz", { sessionId: id });
   };
 
+  const sendQuestion = () => {
+    socket.emit("next question", { sessionId: id });
+  };
+
   return (
     <>
       <div className="bg-[#1A1A2F] mb-10">
@@ -63,6 +67,7 @@ function Lobby() {
         </div>
         <hr className="mb-4" />
         <DisplayPlayers socket={socket} />
+        <button onClick={sendQuestion}>next</button>
       </div>
     </>
   );
