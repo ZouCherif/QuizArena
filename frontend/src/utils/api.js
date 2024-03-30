@@ -70,3 +70,10 @@ export const joinSession = async (sessionCode) => {
   });
   return response.data;
 };
+
+export const getSessionCode = async (id) => {
+  const response = await api.get(`/join/getCode/${id}`, {
+    withCredentials: true,
+  });
+  return response.data;
+};

@@ -20,6 +20,24 @@ const joinSession = async (req, res) => {
   }
 };
 
+const getSessionCode = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const sessionCode = await Session.findOne({ _id: id }).select(
+      "sessionCode -_id"
+    );
+
+    if (!sessionCode) {
+      return res.status(404).json({ message: "Session not found" });
+    }
+
+    res.json(sessionCode);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   joinSession,
+  getSessionCode,
 };

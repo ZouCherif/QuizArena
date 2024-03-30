@@ -22,7 +22,7 @@ app.use(cookieParser());
 app.use("/register", require("./routes/auth/register"));
 app.use("/login", require("./routes/auth/login"));
 app.use("/logout", require("./routes/auth/logout"));
-app.use("/questions", require("./routes/questions/quesions"));
+app.use("/questions", require("./routes/questions/questions"));
 app.use("/join", require("./routes/sessions/sessions"));
 
 app.all("*", (req, res) => {
@@ -52,11 +52,24 @@ function verifyAnswers(sessionId) {
 io.on("connection", (socket) => {
   console.log("a user connected");
 
-  socket.on("create session", ({ sessionId }) => {
-    activeSessions[sessionId] = { id: sessionId, players: [] };
-    console.log(`Session created: ${sessionId}`);
-    socket.join(sessionId);
-    io.emit("session created", activeSessions[sessionId]);
+  socket.on("create session", async ({ sessionId }) => {
+    try {
+      const session = await Session.findById(sessionId).populate("questions");
+      if (!session) {
+        socket.emit("invalid session", "Invalid session ID");
+        return;
+      }
+      activeSessions[sessionId] = {
+        id: sessionId,
+        players: [],
+        nbP: session.nbP,
+      };
+      io.emit("session created", activeSessions[sessionId]);
+      activeSessions[sessionId].questions = session.questions;
+      socket.join(sessionId);
+    } catch {
+      socket.emit("errorEvent", { message: "An error occurred" });
+    }
   });
 
   socket.on("join session", ({ sessionId, playerName }) => {
@@ -66,27 +79,17 @@ io.on("connection", (socket) => {
     }
 
     activeSessions[sessionId].players.push({ id: socket.id, name: playerName });
-
     socket.join(sessionId);
-    console.log(`${playerName} joined session ${sessionId}`);
 
-    io.to(sessionId).emit("player joined", playerName);
+    io.to(sessionId).emit("player joined", { playerId: socket.id, playerName });
   });
 
-  socket.on("start quiz", async ({ sessionId }) => {
-    try {
-      if (!activeSessions[sessionId]) {
-        socket.emit("invalid session", "Invalid session ID");
-        return;
-      }
-
-      const session = await Session.findById(sessionId).populate("questions");
-      activeSessions[sessionId].questions = session.questions;
-      sendQuestion(sessionId, activeSessions[sessionId].questions.shift());
-      console.log(activeSessions[sessionId].questions);
-    } catch (e) {
-      socket.emit("errorEvent", { message: "An error occurred" });
+  socket.on("start quiz", ({ sessionId }) => {
+    if (!activeSessions[sessionId]) {
+      socket.emit("invalid session", "Invalid session ID");
+      return;
     }
+    sendQuestion(sessionId, activeSessions[sessionId].questions.shift());
   });
 
   socket.on("next question", ({ sessionId }) => {
@@ -109,17 +112,22 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("A user disconnected");
-    // clearTimeout(answerTimeout);
 
     for (const sessionId in activeSessions) {
       const session = activeSessions[sessionId];
-      const playerIndex = session.players.findIndex(
+      const { players } = session;
+
+      const disconnectedPlayerIndex = players.findIndex(
         (player) => player.id === socket.id
       );
-      if (playerIndex !== -1) {
-        const playerName = session.players[playerIndex].name;
-        session.players.splice(playerIndex, 1);
-        io.to(sessionId).emit("player left", { sessionId, playerName });
+      if (disconnectedPlayerIndex !== -1) {
+        const disconnectedPlayer = players[disconnectedPlayerIndex];
+
+        players.splice(disconnectedPlayerIndex, 1);
+
+        socket.to(sessionId).emit("player left", disconnectedPlayer.id);
+
+        console.log(`${disconnectedPlayer.name} left session ${sessionId}`);
       }
     }
   });
