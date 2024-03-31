@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 function Timer() {
-  const [timer, setTimer] = useState(15);
+  const { admin } = useAuth();
+  const [timer, setTimer] = useState(120);
   const [timerColor, setTimerColor] = useState("white");
   const intervalRef = useRef(null);
   useEffect(() => {
@@ -28,7 +30,7 @@ function Timer() {
   const seconds = timer % 60;
   const formattedTimer = `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
 
-  return (
+  return admin ? (
     <div>
       <p className="text-center">Le quiz commence aprés:</p>
       <p
@@ -39,7 +41,7 @@ function Timer() {
         {formattedTimer}
       </p>
     </div>
-  );
+  ) : null;
 }
 
 export default Timer;

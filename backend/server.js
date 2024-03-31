@@ -60,6 +60,7 @@ io.on("connection", (socket) => {
         return;
       }
       activeSessions[sessionId] = {
+        creator: socket.id,
         id: sessionId,
         players: [],
         nbP: session.nbP,
@@ -81,7 +82,9 @@ io.on("connection", (socket) => {
     activeSessions[sessionId].players.push({ id: socket.id, name: playerName });
     socket.join(sessionId);
 
-    io.to(sessionId).emit("player joined", { playerId: socket.id, playerName });
+    io.to(sessionId).emit("player joined", {
+      players: activeSessions[sessionId].players,
+    });
   });
 
   socket.on("start quiz", ({ sessionId }) => {
@@ -124,8 +127,10 @@ io.on("connection", (socket) => {
         const disconnectedPlayer = players[disconnectedPlayerIndex];
 
         players.splice(disconnectedPlayerIndex, 1);
-
-        socket.to(sessionId).emit("player left", disconnectedPlayer.id);
+        activeSessions[sessionId].players = players;
+        socket
+          .to(sessionId)
+          .emit("player left", { players: activeSessions[sessionId].players });
 
         console.log(`${disconnectedPlayer.name} left session ${sessionId}`);
       }

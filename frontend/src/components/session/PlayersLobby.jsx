@@ -1,33 +1,16 @@
 import { useEffect } from "react";
-import io from "socket.io-client";
 import { useParams } from "react-router-dom";
-import {
-  Timer,
-  DisplayPlayers,
-  DisplaySessionCode,
-  StartBtn,
-} from "../components";
+import { DisplayPlayers, DisplaySessionCode } from "..";
 import { MdContentCopy } from "react-icons/md";
 
-function Lobby() {
+function PlayersLobby({ socket }) {
   const { id } = useParams();
-  const socket = io("http://localhost:3500");
 
   useEffect(() => {
-    socket.emit("create session", { sessionId: id });
-
-    socket.on("errorEvent", ({ message }) => {
-      console.log(`${message}`);
-    });
-
     return () => {
       socket.removeAllListeners();
     };
   }, [id, socket]);
-
-  const sendQuestion = () => {
-    socket.emit("next question", { sessionId: id });
-  };
 
   return (
     <>
@@ -36,8 +19,6 @@ function Lobby() {
           <button className="rounded-lg bg-[#6541F5] px-6 py-2 hover:bg-[#886df3] duration-300 text-base">
             Quitter
           </button>
-          <Timer />
-          <StartBtn socket={(socket, id)} />
         </nav>
       </div>
       <div className="max-w-[1200px] mx-auto p-2">
@@ -54,10 +35,9 @@ function Lobby() {
           </div>
         </div>
         <DisplayPlayers socket={socket} />
-        <button onClick={sendQuestion}>next</button>
       </div>
     </>
   );
 }
 
-export default Lobby;
+export default PlayersLobby;
