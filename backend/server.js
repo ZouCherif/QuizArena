@@ -42,8 +42,16 @@ const io = socketIo(server, {
 
 const activeSessions = {};
 
-function sendQuestion(sessionId, question) {
-  io.to(sessionId).emit("question", question);
+function sendQuestion(sessionId) {
+  const session = activeSessions[sessionId];
+  if (!session) return;
+  if (session.questions && session.currentQuestion < session.questions.length) {
+    const questionToSend = session.questions[session.currentQuestion];
+    io.to(sessionId).emit("question", questionToSend);
+    activeSessions[sessionId].currentQuestion++;
+  } else {
+    console.log("No more questions available for this session");
+  }
 }
 function verifyAnswers(sessionId) {
   console.log("verifying...");
@@ -64,6 +72,7 @@ io.on("connection", (socket) => {
         id: sessionId,
         players: [],
         nbP: session.nbP,
+        currentQuestion: 0,
       };
       io.emit("session created", activeSessions[sessionId]);
       activeSessions[sessionId].questions = session.questions;
@@ -92,21 +101,12 @@ io.on("connection", (socket) => {
       socket.emit("invalid session", "Invalid session ID");
       return;
     }
-    sendQuestion(sessionId, activeSessions[sessionId].questions.shift());
+    io.to(sessionId).emit("quiz started");
+    sendQuestion(sessionId);
   });
 
   socket.on("next question", ({ sessionId }) => {
-    if (activeSessions[sessionId] && activeSessions[sessionId].questions) {
-      const questions = activeSessions[sessionId].questions;
-      if (questions.length > 0) {
-        const question = questions.shift();
-        sendQuestion(sessionId, question);
-      } else {
-        console.log("No more questions available for this session");
-      }
-    } else {
-      console.log("Session or questions not initialized");
-    }
+    sendQuestion(sessionId);
   });
 
   socket.on("submit answer", (answer) => {

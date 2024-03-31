@@ -8,7 +8,6 @@ function QuestionsShow({ socket }) {
 
   useEffect(() => {
     socket.on("question", (question) => {
-      // useNavigate(`/session/${id}/start`, { replace: true })
       setQst(question.question);
       setOptions(question.options);
     });

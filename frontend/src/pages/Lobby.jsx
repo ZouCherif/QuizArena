@@ -37,7 +37,7 @@ function Lobby() {
             Quitter
           </button>
           <Timer />
-          <StartBtn socket={(socket, id)} />
+          <StartBtn socket={socket} id={id} />
         </nav>
       </div>
       <div className="max-w-[1200px] mx-auto p-2">

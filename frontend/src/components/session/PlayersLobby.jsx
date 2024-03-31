@@ -10,7 +10,7 @@ function PlayersLobby({ socket }) {
     return () => {
       socket.removeAllListeners();
     };
-  }, [id, socket]);
+  }, [socket]);
 
   return (
     <>
