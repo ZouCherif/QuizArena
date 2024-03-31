@@ -47,7 +47,7 @@ function QuestionsShow({ socket, id }) {
             );
           })}
         </ul>
-        <BarTimer />
+        <BarTimer alert={qst} />
       </div>
     </div>
   );

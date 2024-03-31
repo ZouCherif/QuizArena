@@ -142,6 +142,10 @@ io.on("connection", (socket) => {
 
   socket.on("next question", ({ sessionId }) => {
     sendQuestion(sessionId);
+    activeSessions[sessionId].startTime = Date.now();
+    timer = setTimeout(() => {
+      io.to(sessionId).emit("stop");
+    }, 20000);
   });
 
   socket.on("submit answer", ({ sessionId, answer }) => {
