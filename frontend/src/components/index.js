@@ -1,11 +1,7 @@
 import NavBar from "./NavBar";
-import Timer from "./lobby/Timer";
-import DisplayPlayers from "./lobby/DisplayPlayers";
 import SessionCode from "./home/SessionCode";
-import DisplaySessionCode from "./lobby/DiplaySessionCode";
-import StartBtn from "./lobby/StartBtn";
-import PlayersLobby from "./session/PlayersLobby";
-import Show from "./session/Show";
+import { DisplaySessionCode, StartBtn, DisplayPlayers, Timer } from "./lobby";
+import { PlayersLobby, Show, Lobby, ShowAdmin } from "./session";
 export {
   NavBar,
   Timer,
@@ -15,4 +11,6 @@ export {
   StartBtn,
   PlayersLobby,
   Show,
+  Lobby,
+  ShowAdmin,
 };

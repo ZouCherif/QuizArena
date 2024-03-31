@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function QuestionsShow({ socket }) {
+function QuestionsShow({ socket, id }) {
   const [qst, setQst] = useState(
     "lrem ipsum hello world this is my awesome quiz app give me your opinion?"
   );
@@ -14,7 +14,7 @@ function QuestionsShow({ socket }) {
   }, [socket]);
 
   const handleSubmitAnswer = (answer) => {
-    socket.emit("submit answer", answer);
+    socket.emit("submit answer", { sessionId: id, answer });
   };
   return (
     <div className="max-w-[1100px] mx-auto flex flex-col items-center justify-center min-h-screen">

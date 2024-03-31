@@ -45,7 +45,7 @@ function QuestionsDisplay() {
     try {
       const response = await saveQuestions({ data, id });
       console.log(response.message);
-      navigate(`/session/${id}/lobby`);
+      navigate(`/session/${id}/arenaAdmin`);
     } catch (e) {
       console.log(e);
     }

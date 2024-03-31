@@ -42,7 +42,7 @@ const io = socketIo(server, {
 
 const activeSessions = {};
 
-function sendQuestion(sessionId) {
+const sendQuestion = (sessionId) => {
   const session = activeSessions[sessionId];
   if (!session) return;
   if (session.questions && session.currentQuestion < session.questions.length) {
@@ -52,7 +52,7 @@ function sendQuestion(sessionId) {
   } else {
     console.log("No more questions available for this session");
   }
-}
+};
 function verifyAnswers(sessionId) {
   console.log("verifying...");
 }
@@ -102,15 +102,32 @@ io.on("connection", (socket) => {
       return;
     }
     io.to(sessionId).emit("quiz started");
-    sendQuestion(sessionId);
+    setTimeout(() => sendQuestion(sessionId), 100);
   });
 
   socket.on("next question", ({ sessionId }) => {
     sendQuestion(sessionId);
   });
 
-  socket.on("submit answer", (answer) => {
-    console.log(answer);
+  socket.on("submit answer", ({ sessionId, answer }) => {
+    const session = activeSessions[sessionId];
+    if (!session) {
+      console.log("No active session found");
+      return;
+    }
+
+    const player = session.players.find((player) => player.id === socket.id);
+    if (!player) {
+      console.log("No player found with provided socket ID");
+      return;
+    }
+    const creator = activeSessions[sessionId].creator;
+    if (!creator) {
+      console.log("No creator");
+      return;
+    }
+
+    io.to(creator).emit("answered", { playerName: player.name });
   });
 
   socket.on("disconnect", () => {

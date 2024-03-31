@@ -3,7 +3,7 @@ import io from "socket.io-client";
 import { useParams, useLocation } from "react-router-dom";
 import { Show } from "../components";
 
-function GetReady() {
+function Arena() {
   const { id } = useParams();
   const location = useLocation();
   const socket = io("http://localhost:3500");
@@ -22,7 +22,7 @@ function GetReady() {
     };
   }, [id, socket, location.state.playerName]);
 
-  return <Show socket={socket} />;
+  return <Show socket={socket} id={id} />;
 }
 
-export default GetReady;
+export default Arena;

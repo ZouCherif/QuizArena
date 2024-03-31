@@ -11,7 +11,7 @@ function Join() {
   };
 
   const handleJoinSession = () => {
-    navigate(`/session/${id}/getReady`, { state: { playerName } });
+    navigate(`/session/${id}/arena`, { state: { playerName } });
   };
 
   return (
