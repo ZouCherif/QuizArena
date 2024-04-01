@@ -78,7 +78,6 @@ function verifyAnswers(playerIndex, answer, timeTaken, sessionId) {
 
 io.on("connection", (socket) => {
   console.log("a user connected");
-  let timer;
 
   socket.on("create session", async ({ sessionId }) => {
     try {
@@ -95,6 +94,7 @@ io.on("connection", (socket) => {
         currentQuestion: -1,
         liveAnswered: 0,
         timeout: false,
+        started: false,
       };
       io.emit("session created", activeSessions[sessionId]);
       activeSessions[sessionId].questions = session.questions;
@@ -108,6 +108,10 @@ io.on("connection", (socket) => {
     if (!activeSessions[sessionId]) {
       socket.emit("invalid session", "Invalid session ID");
       return;
+    }
+
+    if (activeSessions[sessionId].started) {
+      socket.emit("invalid session", "Sorry! you can not access this session");
     }
 
     activeSessions[sessionId].players.push({
@@ -127,10 +131,11 @@ io.on("connection", (socket) => {
       socket.emit("invalid session", "Invalid session ID");
       return;
     }
+    activeSessions[sessionId].started = true;
     io.to(sessionId).emit("quiz started");
     setTimeout(() => sendQuestion(sessionId), 100);
     activeSessions[sessionId].startTime = Date.now();
-    timer = setTimeout(() => {
+    activeSessions[sessionId].timerId = setTimeout(() => {
       if (!activeSessions[sessionId].timeout) {
         activeSessions[sessionId].timeout = true;
         io.to(sessionId).emit("stop");
@@ -140,8 +145,9 @@ io.on("connection", (socket) => {
 
   socket.on("next question", ({ sessionId }) => {
     sendQuestion(sessionId);
+    activeSessions[sessionId].liveAnswered = 0;
     activeSessions[sessionId].startTime = Date.now();
-    timer = setTimeout(() => {
+    activeSessions[sessionId].timerId = setTimeout(() => {
       if (!activeSessions[sessionId].timeout) {
         activeSessions[sessionId].timeout = true;
         io.to(sessionId).emit("stop");
@@ -151,11 +157,6 @@ io.on("connection", (socket) => {
 
   socket.on("submit answer", ({ sessionId, answer }) => {
     const endTime = Date.now();
-    const session = activeSessions[sessionId];
-    if (!session) {
-      console.log("No active session found");
-      return;
-    }
 
     const playerIndex = activeSessions[sessionId].players.findIndex(
       (player) => player.id === socket.id
@@ -171,13 +172,17 @@ io.on("connection", (socket) => {
     )
       return;
 
+    const timeTaken = endTime - activeSessions[sessionId].startTime;
+    verifyAnswers(playerIndex, answer, timeTaken, sessionId);
+
     activeSessions[sessionId].liveAnswered++;
     if (
-      session.liveAnswered === session.players.length &&
+      activeSessions[sessionId].liveAnswered ===
+        activeSessions[sessionId].players.length &&
       !activeSessions[sessionId].timeout
     ) {
       activeSessions[sessionId].timeout = true;
-      clearTimeout(timer);
+      clearTimeout(activeSessions[sessionId].timerId);
       io.to(sessionId).emit("stop");
     }
 
@@ -186,15 +191,24 @@ io.on("connection", (socket) => {
       console.log("No creator");
       return;
     }
-    const timeTaken = endTime - activeSessions[sessionId].startTime;
-    verifyAnswers(playerIndex, answer, timeTaken, sessionId);
 
     io.to(creator).emit("answered", {
       playerName: activeSessions[sessionId].players[playerIndex].name,
     });
   });
 
-  socket.on("send results", ({ sessionId }) => {});
+  socket.on("send results", ({ sessionId }) => {
+    const players = activeSessions[sessionId].players;
+    const currentQuestionIndex = activeSessions[sessionId].currentQuestion;
+    const totalPlayers = players.length;
+    for (const player of players) {
+      if (player.answers[currentQuestionIndex]) {
+        io.to(player.id).emit("result", {
+          correct: player.answers[currentQuestionIndex].correct,
+        });
+      }
+    }
+  });
   socket.on("disconnect", () => {
     console.log("A user disconnected");
 

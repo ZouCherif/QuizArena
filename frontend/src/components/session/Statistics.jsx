@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import BarChart from "./BarChart";
 
 function Statistics({ socket, id }) {
   const [qst, setQst] = useState();
@@ -26,7 +27,9 @@ function Statistics({ socket, id }) {
 
     socket.on("stop", () => {
       clearInterval(intervalRef.current);
-      socket.emit("send results", { sessionId: id });
+      setTimeout(() => {
+        socket.emit("send results", { sessionId: id });
+      }, 3000);
     });
 
     socket.on("answered", ({ playerName }) => {
@@ -87,6 +90,10 @@ function Statistics({ socket, id }) {
               <span>{player}</span>
             </div>
           ))}
+        </div>
+        <div className="flex">
+          <BarChart />
+          <div></div>
         </div>
       </div>
     </div>
