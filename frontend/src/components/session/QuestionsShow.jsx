@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import BarTimer from "./BarTimer";
 
 function QuestionsShow({ socket, id }) {
@@ -7,23 +7,31 @@ function QuestionsShow({ socket, id }) {
   );
   const [options, setOptions] = useState(["1st", "2nd", "3rd", "4th"]);
   const [quizStopped, setQuizStopped] = useState(false);
+  const answerSubmitted = useRef(false);
 
   useEffect(() => {
     socket.on("question", (question) => {
       setQst(question.question);
       setOptions(question.options);
       setQuizStopped(false);
+      answerSubmitted.current = false;
     });
 
     socket.on("stop", () => {
-      setQuizStopped(true);
-      socket.emit("submit answer", { sessionId: id, answer: "" });
+      if (!answerSubmitted.current) {
+        setQuizStopped(true);
+        socket.emit("submit answer", { sessionId: id, answer: "" });
+        answerSubmitted.current = true;
+      }
     });
   }, [socket, id]);
 
   const handleSubmitAnswer = (answer) => {
-    setQuizStopped(true);
-    socket.emit("submit answer", { sessionId: id, answer });
+    if (!answerSubmitted.current) {
+      setQuizStopped(true);
+      socket.emit("submit answer", { sessionId: id, answer });
+      answerSubmitted.current = true;
+    }
   };
   return (
     <div className="max-w-[1100px] mx-auto flex flex-col items-center justify-center min-h-screen select-none">
@@ -49,6 +57,13 @@ function QuestionsShow({ socket, id }) {
         </ul>
         <BarTimer alert={qst} />
       </div>
+      {answerSubmitted.current && (
+        <div className="absolute h-screen w-screen z-10 bg-black bg-opacity-70 flex justify-center items-center">
+          <p className="text-6xl font-semibold animate-pulse text-center">
+            attendant les autres joueurs...
+          </p>
+        </div>
+      )}
     </div>
   );
 }

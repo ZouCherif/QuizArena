@@ -24,11 +24,16 @@ function Statistics({ socket, id }) {
       }, 1000);
     });
 
+    socket.on("stop", () => {
+      clearInterval(intervalRef.current);
+      socket.emit("send results", { sessionId: id });
+    });
+
     socket.on("answered", ({ playerName }) => {
       setAnswered((prevAnswered) => [...prevAnswered, playerName]);
     });
     return () => clearInterval(intervalRef.current);
-  }, [socket]);
+  }, [socket, id]);
 
   useEffect(() => {
     if (questionTime <= 0) {

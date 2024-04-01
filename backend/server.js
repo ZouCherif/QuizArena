@@ -44,6 +44,7 @@ const activeSessions = {};
 
 const sendQuestion = (sessionId) => {
   activeSessions[sessionId].currentQuestion++;
+  activeSessions[sessionId].timeout = false;
   const session = activeSessions[sessionId];
   if (!session) return;
   if (session.questions && session.currentQuestion < session.questions.length) {
@@ -53,16 +54,8 @@ const sendQuestion = (sessionId) => {
     console.log("No more questions available for this session");
   }
 };
-function verifyAnswers(playerId, answer, timeTaken, sessionId) {
+function verifyAnswers(playerIndex, answer, timeTaken, sessionId) {
   console.log("verifying...");
-  const playerIndex = activeSessions[sessionId].players.findIndex(
-    (player) => player.id === playerId
-  );
-  if (playerIndex < 0) {
-    console.log("player not found");
-    return;
-  }
-
   if (
     answer ===
     activeSessions[sessionId].questions[
@@ -100,6 +93,8 @@ io.on("connection", (socket) => {
         players: [],
         nbP: session.nbP,
         currentQuestion: -1,
+        liveAnswered: 0,
+        timeout: false,
       };
       io.emit("session created", activeSessions[sessionId]);
       activeSessions[sessionId].questions = session.questions;
@@ -136,7 +131,10 @@ io.on("connection", (socket) => {
     setTimeout(() => sendQuestion(sessionId), 100);
     activeSessions[sessionId].startTime = Date.now();
     timer = setTimeout(() => {
-      io.to(sessionId).emit("stop");
+      if (!activeSessions[sessionId].timeout) {
+        activeSessions[sessionId].timeout = true;
+        io.to(sessionId).emit("stop");
+      }
     }, 20000);
   });
 
@@ -144,7 +142,10 @@ io.on("connection", (socket) => {
     sendQuestion(sessionId);
     activeSessions[sessionId].startTime = Date.now();
     timer = setTimeout(() => {
-      io.to(sessionId).emit("stop");
+      if (!activeSessions[sessionId].timeout) {
+        activeSessions[sessionId].timeout = true;
+        io.to(sessionId).emit("stop");
+      }
     }, 20000);
   });
 
@@ -156,22 +157,44 @@ io.on("connection", (socket) => {
       return;
     }
 
-    const player = session.players.find((player) => player.id === socket.id);
-    if (!player) {
-      console.log("No player found with provided socket ID");
+    const playerIndex = activeSessions[sessionId].players.findIndex(
+      (player) => player.id === socket.id
+    );
+    if (playerIndex < 0) {
+      console.log("player not found");
       return;
     }
+
+    if (
+      activeSessions[sessionId].players[playerIndex].answers.length ===
+      activeSessions[sessionId].currentQuestion + 1
+    )
+      return;
+
+    activeSessions[sessionId].liveAnswered++;
+    if (
+      session.liveAnswered === session.players.length &&
+      !activeSessions[sessionId].timeout
+    ) {
+      activeSessions[sessionId].timeout = true;
+      clearTimeout(timer);
+      io.to(sessionId).emit("stop");
+    }
+
     const creator = activeSessions[sessionId].creator;
     if (!creator) {
       console.log("No creator");
       return;
     }
     const timeTaken = endTime - activeSessions[sessionId].startTime;
-    verifyAnswers(socket.id, answer, timeTaken, sessionId);
+    verifyAnswers(playerIndex, answer, timeTaken, sessionId);
 
-    io.to(creator).emit("answered", { playerName: player.name });
+    io.to(creator).emit("answered", {
+      playerName: activeSessions[sessionId].players[playerIndex].name,
+    });
   });
 
+  socket.on("send results", ({ sessionId }) => {});
   socket.on("disconnect", () => {
     console.log("A user disconnected");
 
