@@ -55,7 +55,6 @@ const sendQuestion = (sessionId) => {
   }
 };
 function verifyAnswers(playerIndex, answer, timeTaken, sessionId) {
-  console.log("verifying...");
   if (
     answer ===
     activeSessions[sessionId].questions[
@@ -67,6 +66,10 @@ function verifyAnswers(playerIndex, answer, timeTaken, sessionId) {
       timeTaken,
       correct: true,
     });
+    const baseScore = 25000;
+    let score = baseScore - timeTaken;
+    score = Math.max(score, 0);
+    activeSessions[sessionId].players[playerIndex].score += score;
   } else {
     activeSessions[sessionId].players[playerIndex].answers.push({
       answer,
@@ -117,6 +120,7 @@ io.on("connection", (socket) => {
     activeSessions[sessionId].players.push({
       id: socket.id,
       name: playerName,
+      score: 0,
       answers: [],
     });
     socket.join(sessionId);
@@ -194,6 +198,7 @@ io.on("connection", (socket) => {
 
     io.to(creator).emit("answered", {
       playerName: activeSessions[sessionId].players[playerIndex].name,
+      id: activeSessions[sessionId].players[playerIndex].id,
     });
   });
 
@@ -208,7 +213,72 @@ io.on("connection", (socket) => {
         });
       }
     }
+
+    const answers = [
+      {
+        option:
+          activeSessions[sessionId].questions[currentQuestionIndex].options[0],
+        percentage: 0,
+      },
+      {
+        option:
+          activeSessions[sessionId].questions[currentQuestionIndex].options[1],
+        percentage: 0,
+      },
+      {
+        option:
+          activeSessions[sessionId].questions[currentQuestionIndex].options[2],
+        percentage: 0,
+      },
+      {
+        option:
+          activeSessions[sessionId].questions[currentQuestionIndex].options[3],
+        percentage: 0,
+      },
+    ];
+    players.forEach((player) => {
+      const answer = player.answers[currentQuestionIndex].answer;
+      switch (answer) {
+        case answers[0].option:
+          answers[0].percentage++;
+          break;
+        case answers[1].option:
+          answers[1].percentage++;
+          break;
+        case answers[2].option:
+          answers[2].percentage++;
+          break;
+        case answers[3].option:
+          answers[3].percentage++;
+          break;
+        default:
+          break;
+      }
+    });
+
+    const result = answers.map((option) => {
+      return {
+        option: option.option,
+        percentage: (option.percentage * 100) / totalPlayers,
+      };
+    });
+
+    const ranking = players.map((player) => {
+      return {
+        name: player.name,
+        id: player.id,
+        score: player.score,
+      };
+    });
+
+    ranking.sort((a, b) => b.score - a.score);
+
+    io.to(activeSessions[sessionId].creator).emit("results", {
+      result,
+      ranking,
+    });
   });
+
   socket.on("disconnect", () => {
     console.log("A user disconnected");
 
