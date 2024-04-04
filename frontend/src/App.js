@@ -9,6 +9,7 @@ import {
   QuizValidation,
   Join,
   Ranking,
+  Results,
 } from "./pages";
 import RequireAuth from "./components/RequireAuth";
 import RankPage from "./components/RankPage";
@@ -37,6 +38,7 @@ function App() {
           <Route path=":id/arenaAdmin" element={<ArenaAdmin />} />
           <Route path=":id/arena" element={<Arena />} />
           <Route path=":id/join" element={<Join />} />
+          <Route path=":id/results" element={<Results />} />
         </Route>
         <Route path="/addQuestions" element={<AddQuestions />} />
         <Route path="/QuizValidation" element={<QuizValidation />} />

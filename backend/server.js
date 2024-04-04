@@ -12,6 +12,7 @@ const connectDB = require("./config/dbConn");
 const socketIo = require("socket.io");
 const http = require("http");
 const Session = require("./models/Session");
+const PastSession = require("./models/PastSession");
 
 connectDB();
 app.use(logger);
@@ -24,8 +25,8 @@ app.use("/login", require("./routes/auth/login"));
 app.use("/logout", require("./routes/auth/logout"));
 app.use("/questions", require("./routes/questions/questions"));
 app.use("/join", require("./routes/sessions/sessions"));
+app.use("/history", require("./routes/sessions/sessions"));
 app.use("/ranking", require("./routes/ranking/rank"));
-
 
 app.all("*", (req, res) => {
   res.status(404);
@@ -53,7 +54,6 @@ const sendQuestion = (sessionId) => {
     const questionToSend = session.questions[session.currentQuestion];
     io.to(sessionId).emit("question", questionToSend);
   } else {
-    console.log(activeSessions[sessionId]);
     io.to(sessionId).emit("finish");
   }
 };
@@ -70,9 +70,11 @@ function verifyAnswers(playerIndex, answer, timeTaken, sessionId) {
       timeTaken,
       correct: true,
     });
-    const baseScore = 25000;
-    let score = baseScore - timeTaken;
-    score = Math.max(score, 0);
+    const maxTime = 20000;
+    const baseScore = 100;
+    const normalizedTime = Math.min(timeTaken, maxTime) / maxTime;
+
+    let score = Math.round(baseScore * (1 - normalizedTime));
     activeSessions[sessionId].players[playerIndex].score += score;
   } else {
     activeSessions[sessionId].players[playerIndex].answers.push({
@@ -86,7 +88,7 @@ function verifyAnswers(playerIndex, answer, timeTaken, sessionId) {
 io.on("connection", (socket) => {
   console.log("a user connected");
 
-  socket.on("create session", async ({ sessionId }) => {
+  socket.on("create session", async ({ sessionId, username }) => {
     try {
       const session = await Session.findById(sessionId).populate("questions");
       if (!session) {
@@ -95,6 +97,7 @@ io.on("connection", (socket) => {
       }
       activeSessions[sessionId] = {
         creator: socket.id,
+        creatorUsername: username,
         id: sessionId,
         players: [],
         nbP: session.nbP,
@@ -281,6 +284,22 @@ io.on("connection", (socket) => {
       result,
       ranking,
     });
+  });
+
+  socket.on("storeIT", async ({ sessionId }) => {
+    try {
+      activeSessions[sessionId].players.sort((a, b) => b.score - a.score);
+      const sessionResults = {
+        sessionId,
+        creator: activeSessions[sessionId].creatorUsername,
+        players: activeSessions[sessionId].players,
+        questions: activeSessions[sessionId].questions,
+      };
+      const session = await PastSession.create(sessionResults);
+      await session.save();
+    } catch (e) {
+      console.log(e);
+    }
   });
 
   socket.on("disconnect", () => {

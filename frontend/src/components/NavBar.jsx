@@ -1,24 +1,17 @@
-import { FaSearch,FaTrophy  } from "react-icons/fa";
-import { useState, useEffect } from "react";
+import { FaSearch } from "react-icons/fa";
+import { useState } from "react";
 import RegisterPopup from "./RegisterPopup";
 import SigninPopup from "./SigninPopup";
 import RankButton from "./RankButtonCom";
 import { useAuth } from "../context/AuthContext";
 import { IoMdAdd } from "react-icons/io";
-import { useLocation } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 
 function NavBar() {
+  const navigate = useNavigate();
   const { user } = useAuth();
-  const location = useLocation();
   const [ShowSignIn, setShowSignIn] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
-
-
-  
-  useEffect(() =>{
-    console.log("hello");
-  },[location])
 
   return (
     <div className="bg-[#1A1A2F] lg:px-2 lg:py-3 py-2">
@@ -47,7 +40,12 @@ function NavBar() {
             <FaSearch size={16} className="*:text-gray-400" />
           </div>
           {user && (
-            <button className="sm:flex items-center bg-orange-600 hover:bg-gray-700 duration-500 py-1 md:pr-4 md:pl-2 pl-1 pr-2 rounded-lg hidden whitespace-nowrap lg:text-base md:text-sm text-xs">
+            <button
+              className="sm:flex items-center bg-orange-600 hover:bg-gray-700 duration-500 py-1 md:pr-4 md:pl-2 pl-1 pr-2 rounded-lg hidden whitespace-nowrap lg:text-base md:text-sm text-xs"
+              onClick={() => {
+                navigate("/createQuiz");
+              }}
+            >
               <IoMdAdd className="md:mr-2" size={15} />
               Creer un quiz
             </button>
@@ -70,7 +68,7 @@ function NavBar() {
           </div>
         ) : (
           <div className="flex space-x-10">
-            <RankButton/>
+            <RankButton />
             <p className="text-xl">{user.username}</p>
           </div>
         )}

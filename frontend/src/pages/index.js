@@ -7,6 +7,7 @@ import ArenaAdmin from "./ArenaAdmin";
 import Arena from "./Arena";
 import Join from "./Join";
 import Ranking from "./Ranking";
+import Results from "./Results";
 
 export {
   Home,
@@ -18,4 +19,5 @@ export {
   Arena,
   Join,
   Ranking,
+  Results,
 };

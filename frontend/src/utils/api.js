@@ -120,3 +120,10 @@ export const getSessionCode = async (id) => {
   });
   return response.data;
 };
+
+export const getSession = async (id) => {
+  const response = await api.get(`/history/session/${id}`, {
+    withCredentials: true,
+  });
+  return response.data;
+};

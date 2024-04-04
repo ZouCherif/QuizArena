@@ -1,4 +1,5 @@
 const Session = require("../models/Session");
+const PastSession = require("../models/PastSession");
 const joinSession = async (req, res) => {
   try {
     const { sessionCode } = req.params;
@@ -37,7 +38,25 @@ const getSessionCode = async (req, res) => {
   }
 };
 
+const getSession = async (req, res) => {
+  try {
+    if (!req.params.id) {
+      return res.status(404).json({ message: "Session not found" });
+    }
+
+    const pastSession = await PastSession.findOne({ sessionId: req.params.id });
+    if (!pastSession) {
+      return res.status(404).json({ message: "Session not found" });
+    }
+
+    res.status(200).json(pastSession);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   joinSession,
   getSessionCode,
+  getSession,
 };

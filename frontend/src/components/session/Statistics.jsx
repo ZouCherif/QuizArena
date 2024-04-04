@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import QuestionStats from "./QuestionStats";
+import NextQuestionButton from "./NextQuestionButton";
 
 function Statistics({ socket, id }) {
   const [questionTime, setQuestionTime] = useState(20);
@@ -37,9 +38,6 @@ function Statistics({ socket, id }) {
     }
   }, [questionTime]);
 
-  const sendQuestion = () => {
-    socket.emit("next question", { sessionId: id });
-  };
   return (
     <div>
       <div className="bg-[#1A1A2F] mb-8">
@@ -52,15 +50,10 @@ function Statistics({ socket, id }) {
             {questionTime}
             <span className="text-2xl">s</span>
           </p>
-          <button
-            className="rounded-lg bg-[#6541F5] px-6 py-2 hover:bg-[#886df3] duration-300 text-base"
-            onClick={sendQuestion}
-          >
-            Suivant
-          </button>
+          <NextQuestionButton socket={socket} id={id} />
         </nav>
       </div>
-      <QuestionStats socket={socket} />
+      <QuestionStats socket={socket} id={id} />
     </div>
   );
 }

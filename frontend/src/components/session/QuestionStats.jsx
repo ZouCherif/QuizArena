@@ -34,7 +34,9 @@ function QuestionStats({ socket, id }) {
     });
 
     socket.on("finish", () => {
+      socket.emit("storeIT", { sessionId: id });
       navigate(`/session/${id}/results`);
+      // navigate(`/session/${id}/results`, { state: { id } });
     });
   }, [socket, id, navigate]);
   return (
