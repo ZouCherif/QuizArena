@@ -2,12 +2,28 @@ import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useAuth } from "../../context/AuthContext";
 
+
 function UsernamePwd({ email, onClose }) {
   const { registerUser } = useAuth();
   const [data, setData] = useState({
     password: "",
     username: "",
+    country: "",
   });
+  const countries = [
+    "United States",
+    "Canada",
+    "United Kingdom",
+    "Australia",
+    "France",
+    "Germany",
+    "Japan",
+    "Brazil",
+    "India",
+    "China"
+  ];
+  
+
   const [isPasswordValid, setPasswordValidity] = useState(true);
   const [pwdmatch, setPwdMatch] = useState(true);
   const [password2, setPassword2] = useState("");
@@ -53,7 +69,7 @@ function UsernamePwd({ email, onClose }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-2/3 fixed top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-32"
+      className="w-2/3 fixed top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-40"
     >
       <label htmlFor="username">Username :</label>
       <br />
@@ -66,7 +82,23 @@ function UsernamePwd({ email, onClose }) {
         value={data.username}
         onChange={handleInput}
         required
-      />
+      />  
+      <label htmlFor="country">Country :</label>
+      <select
+          id="country"
+          name="country"
+          className="w-full p-3 rounded bg-[#D9D9D9] opacity-50 text-black mb-3"
+          value={data.country}
+          onChange={handleInput}
+          required
+        >
+          <option value="">Select a country</option>
+          {countries.map((country) => (
+            <option>
+              {country}
+            </option>
+          ))}
+      </select>
       <label htmlFor="password">Mot de passe :</label>
       <br />
       <div className="flex w-full p-2 rounded bg-[#D9D9D9] opacity-50 text-black mb-3">
@@ -126,6 +158,7 @@ function UsernamePwd({ email, onClose }) {
           {error}
         </p>
       )}
+
       <button
         className="rounded-lg bg-[#6541F5] px-6 py-2 hover:bg-[#886df3] duration-300 block text-xl mx-auto"
         type="submit"

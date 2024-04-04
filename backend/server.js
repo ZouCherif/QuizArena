@@ -24,6 +24,8 @@ app.use("/login", require("./routes/auth/login"));
 app.use("/logout", require("./routes/auth/logout"));
 app.use("/questions", require("./routes/questions/questions"));
 app.use("/join", require("./routes/sessions/sessions"));
+app.use("/ranking", require("./routes/ranking/rank"));
+
 
 app.all("*", (req, res) => {
   res.status(404);

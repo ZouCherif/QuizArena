@@ -1,14 +1,24 @@
-import { FaSearch } from "react-icons/fa";
-import { useState } from "react";
+import { FaSearch,FaTrophy  } from "react-icons/fa";
+import { useState, useEffect } from "react";
 import RegisterPopup from "./RegisterPopup";
 import SigninPopup from "./SigninPopup";
+import RankButton from "./RankButtonCom";
 import { useAuth } from "../context/AuthContext";
 import { IoMdAdd } from "react-icons/io";
+import { useLocation } from "react-router-dom";
+
 
 function NavBar() {
   const { user } = useAuth();
+  const location = useLocation();
   const [ShowSignIn, setShowSignIn] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+
+
+  
+  useEffect(() =>{
+    console.log("hello");
+  },[location])
 
   return (
     <div className="bg-[#1A1A2F] lg:px-2 lg:py-3 py-2">
@@ -59,7 +69,10 @@ function NavBar() {
             </button>
           </div>
         ) : (
-          <p className="text-xl">{user.username}</p>
+          <div className="flex space-x-10">
+            <RankButton/>
+            <p className="text-xl">{user.username}</p>
+          </div>
         )}
       </div>
       {/* Sign-in Modal */}

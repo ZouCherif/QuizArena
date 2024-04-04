@@ -24,8 +24,8 @@ const generateTokens = (id, email, username) => {
 };
 
 const register = async (req, res) => {
-  const { username, email, password } = req.body;
-  if (!username || !email || !password)
+  const { username, email, password, country } = req.body;
+  if (!username || !email || !password || !country)
     return res.status(400).json({ message: "all infomations are required" });
   const duplicateName = await User.findOne({ username });
   if (duplicateName)
@@ -40,6 +40,7 @@ const register = async (req, res) => {
       email,
       username,
       password: hashedpwd,
+      country,
     });
 
     const { accessToken, refreshToken } = generateTokens(

@@ -7,7 +7,31 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
 });
+axios.interceptors.response.use(
+  response => response,
+  async error => {
+    if (error.response && error.response.status === 401 && !error.config._retry) {
+      // Si la réponse a un statut 401 et qu'elle n'est pas déjà en cours de réessai
+      error.config._retry = true; // Marquez la requête comme en cours de réessai pour éviter une boucle infinie
 
+      try {
+        // Demandez le rafraîchissement de l'access token
+        const res = await api.post('/login/refreshAccessToken');
+        const newAccessToken = res.data.accessToken;
+        
+        // Mettez à jour l'access token dans la requête d'origine
+        error.config.headers.Authorization = `Bearer ${newAccessToken}`;
+        
+        // Réexécutez la requête d'origine avec le nouvel access token
+        return axios(error.config);
+      } catch (refreshError) {
+        console.error("Erreur lors du rafraîchissement de l'access token:", refreshError);
+        return Promise.reject(refreshError); // Rejetez la promesse avec l'erreur de rafraîchissement
+      }
+    }
+    return Promise.reject(error); // Rejetez la promesse avec l'erreur d'origine
+  }
+);
 export const sendCode = async (email) => {
   const response = await api.post("/register/getVerificationCode", { email });
   return response.data;
@@ -70,6 +94,19 @@ export const joinSession = async (sessionCode) => {
   });
   return response.data;
 };
+<<<<<<< HEAD
+export const getUsersRank = async (data) => {
+  try {
+    const response = await api.get("/ranking",data, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching users from:", error);
+    throw error;
+  }
+};
+=======
 
 export const getSessionCode = async (id) => {
   const response = await api.get(`/join/getCode/${id}`, {
@@ -77,3 +114,4 @@ export const getSessionCode = async (id) => {
   });
   return response.data;
 };
+>>>>>>> 778ca9bc0373efdeec0c8923070fa37ab887c86f

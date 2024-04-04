@@ -6,6 +6,7 @@ import QuestionsDisplay from "./QuestionsDisplay";
 import ArenaAdmin from "./ArenaAdmin";
 import Arena from "./Arena";
 import Join from "./Join";
+import Ranking from "./Ranking";
 
 export {
   Home,
@@ -16,4 +17,5 @@ export {
   ArenaAdmin,
   Arena,
   Join,
+  Ranking,
 };

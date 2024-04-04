@@ -1,6 +1,6 @@
 const Question = require("../models/Question");
 const Session = require("../models/Session");
-
+const User = require('../models/User');
 const getQuestions = async (req, res) => {
   try {
     const { name, type, nbP, nbQ, categories, lvl } = req.body;
@@ -96,6 +96,7 @@ const getQuestion = async (req, res) => {
   }
 };
 
+
 const setQuizQuestions = async (req, res) => {
   try {
     const { data, id } = req.body;
@@ -111,9 +112,20 @@ const setQuizQuestions = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+const getRanking = async (req, res) => {
+  try {
+    const users = await User.find({}).sort({ score: -1 });
+    res.json(users);
+  } catch (error) {
+    console.error("Error retrieving users:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 
 module.exports = {
   getQuestions,
   getQuestion,
   setQuizQuestions,
+  getRanking
 };
