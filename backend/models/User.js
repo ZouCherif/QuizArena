@@ -1,4 +1,7 @@
 const mongoose = require("mongoose");
+const { CountryList } = require('country-list-js');
+
+// const countryList = new CountryList();
 
 const userSchema = new mongoose.Schema(
   {
@@ -14,6 +17,13 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
+    },
+    country: {
+      type: String,
+    },
+    score:{
+      type: Number,
+      default: 0
     },
     refreshToken: String,
     resetPasswordToken: String,

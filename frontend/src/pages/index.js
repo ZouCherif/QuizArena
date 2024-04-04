@@ -6,6 +6,7 @@ import QuestionsDisplay from "./QuestionsDisplay";
 import Lobby from "./Lobby";
 import GetReady from "./GetReady";
 import Join from "./Join";
+import Ranking from "./Ranking";
 
 export {
   Home,
@@ -16,4 +17,5 @@ export {
   Lobby,
   GetReady,
   Join,
+  Ranking,
 };
