@@ -94,6 +94,7 @@ export const joinSession = async (sessionCode) => {
   });
   return response.data;
 };
+<<<<<<< HEAD
 export const getUsersRank = async (data) => {
   try {
     const response = await api.get("/ranking",data, {
@@ -105,3 +106,12 @@ export const getUsersRank = async (data) => {
     throw error;
   }
 };
+=======
+
+export const getSessionCode = async (id) => {
+  const response = await api.get(`/join/getCode/${id}`, {
+    withCredentials: true,
+  });
+  return response.data;
+};
+>>>>>>> 778ca9bc0373efdeec0c8923070fa37ab887c86f

@@ -11,6 +11,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   let [loading, setLoading] = useState(true);
+  const [admin, setAdmin] = useState(false);
 
   const getCookieValue = () => {
     const cookieName = "infoToken=";
@@ -41,6 +42,10 @@ export const AuthProvider = ({ children }) => {
     document.cookie = `infoToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
   };
 
+  const setSessionAdmin = (socketId, id) => {
+    if (socketId === id) setAdmin(true);
+  };
+
   useEffect(() => {
     if (loading && !user) {
       const savedToken = getCookieValue();
@@ -52,7 +57,16 @@ export const AuthProvider = ({ children }) => {
   }, [user, loading]);
 
   return (
-    <AuthContext.Provider value={{ user, loginUser, logoutUser, registerUser }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loginUser,
+        logoutUser,
+        registerUser,
+        setSessionAdmin,
+        admin,
+      }}
+    >
       {loading ? null : children}
     </AuthContext.Provider>
   );

@@ -4,8 +4,8 @@ import {
   CreateQuiz,
   AddQuestions,
   QuestionsDisplay,
-  Lobby,
-  GetReady,
+  ArenaAdmin,
+  Arena,
   QuizValidation,
   Join,
   Ranking
@@ -31,6 +31,7 @@ function App() {
           }
         />
         {/* <Route element={<RequireAuth />}> */}
+<<<<<<< HEAD
           <Route path="/createQuiz" element={<CreateQuiz />} />
           <Route path="/addQuestions" element={<AddQuestions />} />
           <Route path="/session" >
@@ -48,6 +49,20 @@ function App() {
           </Route>
           
 
+=======
+        <Route path="/createQuiz" element={<CreateQuiz />} />
+        <Route path="/addQuestions" element={<AddQuestions />} />
+        <Route path="session">
+          <Route path=":id/questions" element={<QuestionsDisplay />} />
+          <Route path=":id/arenaAdmin" element={<ArenaAdmin />} />
+          <Route path=":id/arena" element={<Arena />} />
+          <Route path=":id/join" element={<Join />} />
+        </Route>
+        <Route path="/addQuestions" element={<AddQuestions />} />
+        <Route path="/QuizValidation" element={<QuizValidation />} />
+        <Route path="/questions" element={<QuestionsDisplay />} />
+        <Route path="/addQuestions" element={<AddQuestions />} />
+>>>>>>> 778ca9bc0373efdeec0c8923070fa37ab887c86f
         {/* </Route> */}
       </Routes>
     </Router>

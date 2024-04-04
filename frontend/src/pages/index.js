@@ -3,8 +3,8 @@ import CreateQuiz from "./CreateQuiz";
 import AddQuestions from "./AddQuestions";
 import QuizValidation from "./QuizValidation";
 import QuestionsDisplay from "./QuestionsDisplay";
-import Lobby from "./Lobby";
-import GetReady from "./GetReady";
+import ArenaAdmin from "./ArenaAdmin";
+import Arena from "./Arena";
 import Join from "./Join";
 import Ranking from "./Ranking";
 
@@ -14,8 +14,8 @@ export {
   AddQuestions,
   QuestionsDisplay,
   QuizValidation,
-  Lobby,
-  GetReady,
+  ArenaAdmin,
+  Arena,
   Join,
   Ranking,
 };
