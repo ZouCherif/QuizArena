@@ -51,9 +51,11 @@ const sendQuestion = (sessionId) => {
     const questionToSend = session.questions[session.currentQuestion];
     io.to(sessionId).emit("question", questionToSend);
   } else {
-    console.log("No more questions available for this session");
+    console.log(activeSessions[sessionId]);
+    io.to(sessionId).emit("finish");
   }
 };
+
 function verifyAnswers(playerIndex, answer, timeTaken, sessionId) {
   if (
     answer ===

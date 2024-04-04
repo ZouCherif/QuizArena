@@ -1,14 +1,15 @@
 import BarChart from "./BarChart";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-function QuestionStats({ socket }) {
+function QuestionStats({ socket, id }) {
   const [qst, setQst] = useState();
   const [options, setOptions] = useState([]);
   const [answered, setAnswered] = useState([]);
   const [results, setResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
-  const scrollToRef = useRef(null);
   const [ranking, setRanking] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     socket.on("question", (question) => {
@@ -24,10 +25,6 @@ function QuestionStats({ socket }) {
       setResults(result);
       setRanking(ranking);
       setShowResults(true);
-      scrollToRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
     });
     socket.on("answered", ({ playerName, id }) => {
       const isPlayerAnswered = answered.some((player) => player.id === id);
@@ -35,7 +32,11 @@ function QuestionStats({ socket }) {
         setAnswered((prevAnswered) => [...prevAnswered, { playerName, id }]);
       }
     });
-  }, [socket]);
+
+    socket.on("finish", () => {
+      navigate(`/session/${id}/results`);
+    });
+  }, [socket, id, navigate]);
   return (
     <div className="max-w-[1200px] mx-auto">
       <div>
@@ -65,7 +66,7 @@ function QuestionStats({ socket }) {
           ))}
         </div>
       </div>
-      <div ref={scrollToRef}>
+      <div>
         {showResults && (
           <div className="p-8">
             <div className="border p-4">
