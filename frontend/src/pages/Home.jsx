@@ -10,7 +10,6 @@ function Home() {
   };
   return (
     <div>
-      <NavBar />
       <main className="max-w-[1500px] mx-auto">
         <SessionCode />
       </main>

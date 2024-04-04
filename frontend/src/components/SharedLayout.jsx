@@ -1,20 +1,13 @@
-import React, { useState, useEffect } from "react"; 
-import {getUsersRank } from "../utils/api";
-function SharedLayout(){
-    const [users, setUsers] = useState([]);
+import { Outlet } from "react-router-dom";
+import { NavBar } from ".";
 
-    useEffect(() => {
-      const fetchUsers = async () => {
-        try {
-          const data = await getUsersRank();
-          setUsers(data); // Accédez directement à response.data
-          // console.log(data);
-        } catch (error) {
-          console.error("Error fetching users:", error);
-        }
-      };
-      fetchUsers();
-    }, []);
+function SharedLayout() {
+  return (
+    <>
+      <NavBar />
+      <Outlet />
+    </>
+  );
 }
 
 export default SharedLayout;

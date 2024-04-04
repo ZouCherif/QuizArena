@@ -12,24 +12,28 @@ import {
   Results,
 } from "./pages";
 import RequireAuth from "./components/RequireAuth";
-import RankPage from "./components/RankPage";
+import RankPage from "./components/SharedLayout";
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { SharedLayout } from "./components";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <GoogleOAuthProvider
-              clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-            >
-              <Home />
-            </GoogleOAuthProvider>
-          }
-        />
+        <Route element={<SharedLayout />}>
+          <Route
+            path="/"
+            element={
+              <GoogleOAuthProvider
+                clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+              >
+                <Home />
+              </GoogleOAuthProvider>
+            }
+          />
+          <Route path="/Ranking" element={<Ranking />} />
+        </Route>
         {/* <Route element={<RequireAuth />}> */}
         <Route path="/createQuiz" element={<CreateQuiz />} />
         <Route path="/addQuestions" element={<AddQuestions />} />
@@ -44,9 +48,6 @@ function App() {
         <Route path="/QuizValidation" element={<QuizValidation />} />
         <Route path="/questions" element={<QuestionsDisplay />} />
         <Route path="/addQuestions" element={<AddQuestions />} />
-        <Route element={<RankPage />}>
-          <Route path="/Ranking" element={<Ranking />} />
-        </Route>
         {/* </Route> */}
       </Routes>
     </Router>
