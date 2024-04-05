@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import BarTimer from "./BarTimer";
+import { useNavigate } from "react-router-dom";
 
 function QuestionsShow({ socket, id }) {
   const [qst, setQst] = useState(
@@ -11,6 +12,7 @@ function QuestionsShow({ socket, id }) {
   const [correct, setCorrect] = useState(null);
   const [resultSent, setresultSent] = useState(false);
   const [timeout, setTimeout] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     socket.on("question", (question) => {
@@ -36,7 +38,11 @@ function QuestionsShow({ socket, id }) {
       setCorrect(correct);
       setresultSent(true);
     });
-  }, [socket, id]);
+
+    socket.on("finish", () => {
+      navigate(`/session/${id}/results`);
+    });
+  }, [socket, id, navigate]);
 
   const handleSubmitAnswer = (answer) => {
     if (!answerSubmitted.current) {

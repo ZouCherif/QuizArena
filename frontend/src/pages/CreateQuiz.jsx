@@ -8,10 +8,10 @@ function CreateQuiz() {
     type: "publique",
     nbP: 0,
     nbQ: 0,
-    auto: true,
     categories: [],
     lvl: ["Moyen"],
   });
+  const [auto, setAuto] = useState(true);
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -27,6 +27,9 @@ function CreateQuiz() {
     }));
   };
 
+  const handleAuto = (e) => {
+    setAuto(e.target.value === "true");
+  };
   const cat = [
     "Mathematiques",
     "Histoire",
@@ -94,9 +97,7 @@ function CreateQuiz() {
               onChange={handleInputChange}
             />
           </div>
-          <div
-            className={`flex-1 duration-300 ${!data.auto ? "opacity-10" : ""}`}
-          >
+          <div className={`flex-1 duration-300 ${!auto ? "opacity-10" : ""}`}>
             <label htmlFor="nbQ">nombre de question:</label>
             <br />
             <input
@@ -108,7 +109,7 @@ function CreateQuiz() {
               className="w-[100px] p-3 rounded bg-[#D9D9D9] opacity-50 text-black mb-1"
               placeholder="15"
               required
-              disabled={!data.auto}
+              disabled={!auto}
               onChange={handleInputChange}
             />
           </div>
@@ -121,8 +122,8 @@ function CreateQuiz() {
               type="radio"
               className="align-middle mr-1"
               value="true"
-              checked={data.auto}
-              onChange={handleInputChange}
+              checked={auto}
+              onChange={handleAuto}
             />
             <label htmlFor="auto" className=" mr-2 cursor-pointer">
               generer mes questions
@@ -135,8 +136,8 @@ function CreateQuiz() {
               type="radio"
               className="align-middle mr-1"
               value="false"
-              checked={!data.auto}
-              onChange={handleInputChange}
+              checked={!auto}
+              onChange={handleAuto}
             />
             <label htmlFor="manual" className=" cursor-pointer">
               je cree mes questions
@@ -146,7 +147,7 @@ function CreateQuiz() {
 
         <div
           className={`duration-200 ${
-            data.auto ? "" : "opacity-10 select-none pointer-events-none"
+            auto ? "" : "opacity-10 select-none pointer-events-none"
           }`}
         >
           <p className=" mb-1">

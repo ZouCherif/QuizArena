@@ -12,7 +12,6 @@ import {
   Results,
 } from "./pages";
 import RequireAuth from "./components/RequireAuth";
-import RankPage from "./components/SharedLayout";
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { SharedLayout } from "./components";
