@@ -9,10 +9,16 @@ import { useNavigate } from "react-router-dom";
 
 function NavBar() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, logoutUser } = useAuth();
   const [ShowSignIn, setShowSignIn] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+  const [show, setShow] = useState(false);
 
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+    } catch (e) {}
+  };
   return (
     <div className="bg-[#1A1A2F] lg:px-2 lg:py-3 py-2">
       <div
@@ -69,7 +75,30 @@ function NavBar() {
         ) : (
           <div className="flex space-x-10">
             <RankButton />
-            <p className="text-xl">{user.username}</p>
+            <div
+              className="relative"
+              onMouseEnter={() => setShow(true)}
+              onMouseLeave={() => setShow(false)}
+            >
+              <p className="text-xl cursor-pointer">
+                {user?.username || "hello"}
+              </p>
+              {show && (
+                <div className="border border-[#6541F5] absolute right-0 top-full p-2 bg-[#1A1A2F] rounded-lg">
+                  <span className="h-2 w-2 absolute -top-[5px] right-2 border-l border-t border-[#6541F5] bg-[#1A1A2F] rotate-45"></span>
+                  <button className="hover:bg-[#6541F5] p-2 duration-300 rounded-lg whitespace-nowrap w-full mb-1">
+                    Historique
+                  </button>
+                  <hr />
+                  <button
+                    onClick={handleLogout}
+                    className="hover:bg-[#6541F5] p-2 duration-300 rounded-lg whitespace-nowrap w-full mt-1"
+                  >
+                    Se deconnecter
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>

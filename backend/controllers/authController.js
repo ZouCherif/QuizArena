@@ -211,6 +211,9 @@ const sendResetPasswordEmail = async (email, token) => {
   try {
     await transporter.sendMail(mailOptions);
   } catch (e) {
+    res
+      .status(500)
+      .json({ message: "Erreur lors de l'envoi de l'e-mail de confirmation" });
     console.log("error when sending the email", e.message);
   }
 };
@@ -286,15 +289,13 @@ const getVerificationCode = async (req, res) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    const verificationRecord = new VerificationCode({
-      email: email,
-      code: code,
-    });
-    await verificationRecord.save();
+    await VerificationCode.createOrUpdate(email, code);
     res.status(200).send({ message: "code Sent" });
   } catch (e) {
     console.log("error when sending the email", e.message);
-    res.status(500).send({ message: e.message });
+    res
+      .status(500)
+      .send({ message: "Erreur lors de l'envoi de l'e-mail de confirmation" });
   }
 };
 

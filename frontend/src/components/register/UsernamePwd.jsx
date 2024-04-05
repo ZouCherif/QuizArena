@@ -2,27 +2,25 @@ import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useAuth } from "../../context/AuthContext";
 
-
 function UsernamePwd({ email, onClose }) {
   const { registerUser } = useAuth();
   const [data, setData] = useState({
     password: "",
     username: "",
-    country: "",
+    country: "France",
   });
   const countries = [
+    "France",
     "United States",
     "Canada",
     "United Kingdom",
     "Australia",
-    "France",
     "Germany",
+    "Algeria",
     "Japan",
-    "Brazil",
     "India",
-    "China"
+    "China",
   ];
-  
 
   const [isPasswordValid, setPasswordValidity] = useState(true);
   const [pwdmatch, setPwdMatch] = useState(true);
@@ -67,41 +65,41 @@ function UsernamePwd({ email, onClose }) {
     }
   };
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-2/3 fixed top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-40"
-    >
-      <label htmlFor="username">Username :</label>
+    <form onSubmit={handleSubmit}>
+      <label htmlFor="username" className="text-sm">
+        Username :
+      </label>
       <br />
       <input
         type="text"
         id="username"
         name="username"
-        className="w-full p-3 rounded bg-[#D9D9D9] opacity-50 text-black mb-3"
+        className="w-full px-3 py-2 rounded bg-[#D9D9D9] opacity-50 text-black mb-2"
         placeholder="Username"
         value={data.username}
         onChange={handleInput}
         required
-      />  
-      <label htmlFor="country">Country :</label>
+      />
+      <label htmlFor="country" className="text-sm">
+        Country :
+      </label>
       <select
-          id="country"
-          name="country"
-          className="w-full p-3 rounded bg-[#D9D9D9] opacity-50 text-black mb-3"
-          value={data.country}
-          onChange={handleInput}
-          required
-        >
-          <option value="">Select a country</option>
-          {countries.map((country) => (
-            <option>
-              {country}
-            </option>
-          ))}
+        id="country"
+        name="country"
+        className="w-full px-3 py-2 rounded bg-[#D9D9D9] opacity-50 text-black mb-2"
+        value={data.country}
+        onChange={handleInput}
+        required
+      >
+        {countries.map((country) => (
+          <option className="bg-[#1A1A2F]">{country}</option>
+        ))}
       </select>
-      <label htmlFor="password">Mot de passe :</label>
+      <label htmlFor="password" className="text-sm">
+        Mot de passe :
+      </label>
       <br />
-      <div className="flex w-full p-2 rounded bg-[#D9D9D9] opacity-50 text-black mb-3">
+      <div className="flex w-full px-2 py-1 rounded bg-[#D9D9D9] opacity-50 text-black mb-2">
         <input
           type={showPassword ? "text" : "password"}
           id="password"
@@ -136,12 +134,14 @@ function UsernamePwd({ email, onClose }) {
           Le mot de passe doit comporter 8 caracteres au minimum.
         </p>
       )}
-      <label htmlFor="password2">Confirmer mot de passe :</label>
+      <label htmlFor="password2" className="text-sm">
+        Confirmer mot de passe :
+      </label>
       <input
         type={showPassword ? "text" : "password"}
         id="password2"
         name="password2"
-        className="w-full p-2 rounded bg-[#D9D9D9] opacity-50 text-black mb-6"
+        className="w-full p-2 rounded bg-[#D9D9D9] opacity-50 text-black mb-4"
         placeholder="•••••••••••••"
         value={password2}
         onChange={(e) => setPassword2(e.target.value)}
@@ -149,7 +149,7 @@ function UsernamePwd({ email, onClose }) {
         autoComplete="off"
       />
       {!pwdmatch && (
-        <p className="text-red-500 text-xs">
+        <p className="text-red-500 text-xs text-center">
           Les deux mots de passe ne sont pas identiques.
         </p>
       )}

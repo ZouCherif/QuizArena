@@ -50,12 +50,12 @@ function Email({ setEmail, next }) {
           required
         />
         {error && (
-          <p className="text-red-500 text-xs text-center animate-shake">
+          <p className="text-red-500 text-xs text-center animate-shake truncate">
             {error}
           </p>
         )}
         <button
-          className="rounded-lg bg-[#6541F5] px-6 py-2 hover:bg-[#886df3] duration-300 block xs:text-xl mx-auto xs:mt-8 mt-4 text-lg"
+          className="rounded-lg bg-[#6541F5] px-6 py-2 hover:bg-[#886df3] duration-300 block xs:text-xl mx-auto xs:mt-6 mt-4 text-lg"
           type="submit"
           disabled={submitDiabled}
         >
@@ -63,12 +63,14 @@ function Email({ setEmail, next }) {
         </button>
       </form>
       <div>
-        <div className="flex items-center xs:mt-10 mt-6">
+        <div className="flex items-center xs:mt-8 mt-6">
           <hr className="w-1/2 border border-gray-500" />
           <span className="mx-1 clear-start text-gray-500">OU</span>
           <hr className="w-1/2 border border-gray-500" />
         </div>
-        <p className="mb-5 text-center text-base xs:text-xl">S'inscrire avec Google</p>
+        <p className="mb-5 text-center text-base xs:text-xl">
+          S'inscrire avec Google
+        </p>
         <GoogleOauth />
       </div>
     </>

@@ -17,4 +17,21 @@ const verificationCodeSchema = new mongoose.Schema({
   },
 });
 
+verificationCodeSchema.statics.createOrUpdate = async function (email, code) {
+  try {
+    let verificationCode = await this.findOne({ email });
+
+    if (verificationCode) {
+      verificationCode.code = code;
+    } else {
+      verificationCode = new this({ email, code });
+    }
+
+    await verificationCode.save();
+    return verificationCode;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = mongoose.model("verificationCode", verificationCodeSchema);

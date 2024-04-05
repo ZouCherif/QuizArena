@@ -1,19 +1,11 @@
-import { NavBar, SessionCode } from "../components";
-import { useAuth } from "../context/AuthContext";
+import { SessionCode } from "../components";
 
 function Home() {
-  const { logoutUser } = useAuth();
-  const handleLogout = async () => {
-    try {
-      await logoutUser();
-    } catch (e) {}
-  };
   return (
     <div>
       <main className="max-w-[1500px] mx-auto">
         <SessionCode />
       </main>
-      <button onClick={handleLogout}>logout</button>
     </div>
   );
 }

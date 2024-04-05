@@ -21,34 +21,33 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route element={<SharedLayout />}>
-          <Route
-            path="/"
-            element={
-              <GoogleOAuthProvider
-                clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-              >
-                <Home />
-              </GoogleOAuthProvider>
-            }
-          />
+        <Route
+          element={
+            <GoogleOAuthProvider
+              clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+            >
+              <SharedLayout />
+            </GoogleOAuthProvider>
+          }
+        >
+          <Route path="/" element={<Home />} />
           <Route path="/Ranking" element={<Ranking />} />
         </Route>
-        {/* <Route element={<RequireAuth />}> */}
-        <Route path="/createQuiz" element={<CreateQuiz />} />
-        <Route path="/addQuestions" element={<AddQuestions />} />
-        <Route path="session">
-          <Route path=":id/questions" element={<QuestionsDisplay />} />
-          <Route path=":id/arenaAdmin" element={<ArenaAdmin />} />
-          <Route path=":id/arena" element={<Arena />} />
-          <Route path=":id/join" element={<Join />} />
-          <Route path=":id/results" element={<Results />} />
+        <Route element={<RequireAuth />}>
+          <Route path="/createQuiz" element={<CreateQuiz />} />
+          <Route path="/addQuestions" element={<AddQuestions />} />
+          <Route path="session">
+            <Route path=":id/questions" element={<QuestionsDisplay />} />
+            <Route path=":id/arenaAdmin" element={<ArenaAdmin />} />
+            <Route path=":id/arena" element={<Arena />} />
+            <Route path=":id/join" element={<Join />} />
+            <Route path=":id/results" element={<Results />} />
+          </Route>
+          <Route path="/addQuestions" element={<AddQuestions />} />
+          <Route path="/QuizValidation" element={<QuizValidation />} />
+          <Route path="/questions" element={<QuestionsDisplay />} />
+          <Route path="/addQuestions" element={<AddQuestions />} />
         </Route>
-        <Route path="/addQuestions" element={<AddQuestions />} />
-        <Route path="/QuizValidation" element={<QuizValidation />} />
-        <Route path="/questions" element={<QuestionsDisplay />} />
-        <Route path="/addQuestions" element={<AddQuestions />} />
-        {/* </Route> */}
       </Routes>
     </Router>
   );

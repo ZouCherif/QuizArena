@@ -65,27 +65,29 @@ function SigninPopup({ onClose }) {
         className="xs:mt-2 mt-1 ml-2 hover:bg-gray-800 bg-opacity-5 rounded-full cursor-pointer"
       />
       <dir className="w-2/3 mx-auto">
-      <div className="xs:text-5xl text-center font-semibold xs:mb-5 mb-1 select-none text-3xl">
-            <span className="xs:text-5xl text-center font-semi-bold mb-10 text-[#6541F5] font-bold text-3xl">
-              Q
-            </span>
-            uiz
-            <span className="xs:text-5xl text-center font-semi-bold mb-10 font-bold text-orange-500 text-3xl">
-              A
-            </span>
-            rena
-      </div>
-        <h1 className="xs:text-4xl text-center mt-2 font-semibold text-2xl">
+        <div className="xs:text-5xl text-center font-semibold xs:mb-2 mb-1 select-none text-3xl">
+          <span className="xs:text-5xl text-center font-semi-bold text-[#6541F5] font-bold text-3xl">
+            Q
+          </span>
+          uiz
+          <span className="xs:text-5xl text-center font-semi-bold font-bold text-orange-500 text-3xl">
+            A
+          </span>
+          rena
+        </div>
+        <h1 className="xs:text-4xl text-center mt-1 font-semibold text-2xl">
           Connexion
         </h1>
-        <form onSubmit={handleSubmit} className="xs:mt-5 mt-1">
-          <label htmlFor="email">Email :</label>
+        <form onSubmit={handleSubmit} className="xs:mt-3 mt-1">
+          <label htmlFor="email" className="text-sm">
+            Email :
+          </label>
           <br />
           <input
             type="text"
             id="email"
             name="email"
-            className="w-full p-3 rounded bg-[#D9D9D9] opacity-50 text-black mb-4"
+            className="w-full p-3 rounded bg-[#D9D9D9] opacity-50 text-black mb-3"
             placeholder="exemple@gmail.com"
             value={data.email}
             onChange={handleInput}
@@ -94,7 +96,9 @@ function SigninPopup({ onClose }) {
           {!isEmailValid && (
             <p className="text-red-500 text-xs mb-2">Entrez un email valide.</p>
           )}
-          <label htmlFor="password">Mot de passe :</label>
+          <label htmlFor="password" className="text-sm">
+            Mot de passe :
+          </label>
           <br />
           <div className="flex w-full p-2 rounded bg-[#D9D9D9] opacity-50 text-black mb-1">
             <input
@@ -130,7 +134,7 @@ function SigninPopup({ onClose }) {
               Le mot de passe doit comporter 8 caracteres au minimum.
             </p>
           )}
-          <p className="text-sm text-[#6541F5] hover:underline cursor-pointer w-fit mb-4">
+          <p className="text-sm text-[#6541F5] hover:underline cursor-pointer w-fit mb-3">
             Mot de passe oublié?
           </p>
           {error && (
@@ -154,7 +158,9 @@ function SigninPopup({ onClose }) {
           <span className="mx-1 clear-start text-gray-500">OU</span>
           <hr className="w-1/2 border border-gray-500" />
         </div>
-        <p className="mb-2 text-center text-base xs:text-xl">Se connecter avec Google</p>
+        <p className="mb-2 text-center text-base xs:text-xl">
+          Se connecter avec Google
+        </p>
         <GoogleOauth />
       </dir>
     </div>
